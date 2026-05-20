@@ -113,12 +113,12 @@
     .wml-b {
       font-family: 'Roboto', sans-serif; font-weight: 900;
       letter-spacing: -0.04em;
-      font-size: clamp(32px,4.2vw,62px);
+      font-size: clamp(52px,7vw,110px);
       color: white;
     }
     .wml-i {
       font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
-      font-size: clamp(32px,4.2vw,62px);
+      font-size: clamp(52px,7vw,110px);
       color: white;
     }
 
@@ -195,17 +195,23 @@
 
     /* TEXT LAYERS */
     .ht { position: absolute; opacity: 0; pointer-events: none; z-index: 20; }
-    #txt-fl { left: 5vw; top: 50%; transform: translateY(-50%); font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(32px,4.5vw,72px); letter-spacing: -0.03em; line-height: 1; }
-    #txt-fr { right: 4vw; top: 50%; transform: translateY(-65%); text-align: right; }
-    #txt-fr .iw { display: block; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(32px,4.5vw,72px); letter-spacing: -0.02em; line-height: 1; }
-    #txt-fr .rw { display: block; font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(32px,4.5vw,72px); letter-spacing: -0.03em; line-height: 1; }
-    #txt-craft { left: 5vw; top: 50%; transform: translateY(-50%); font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(32px,4.5vw,72px); letter-spacing: -0.03em; line-height: 1; }
-    #txt-vision { right: 4vw; top: 50%; transform: translateY(-65%); text-align: right; }
-    #txt-vision .iw { display: block; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(32px,4.5vw,72px); letter-spacing: -0.02em; line-height: 1; }
-    #txt-vision .rw { display: block; font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(32px,4.5vw,72px); letter-spacing: -0.03em; line-height: 1; }
+
+    /* beat 2: text hugs frame edges — positioned via JS */
+    #txt-fl { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(28px,3.8vw,62px); letter-spacing: -0.03em; line-height: 1; top: 50%; transform: translateY(-50%); }
+    #txt-fr { text-align: right; top: 50%; transform: translateY(-60%); }
+    #txt-fr .iw { display: block; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(28px,3.8vw,62px); letter-spacing: -0.02em; line-height: 1; }
+    #txt-fr .rw { display: block; font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(28px,3.8vw,62px); letter-spacing: -0.03em; line-height: 1; }
+
+    /* beat 3/4: craft & vision hug frame B edges — also via JS */
+    #txt-craft { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(28px,3.8vw,62px); letter-spacing: -0.03em; line-height: 1; top: 50%; transform: translateY(-50%); }
+    #txt-vision { text-align: right; top: 50%; transform: translateY(-60%); }
+    #txt-vision .iw { display: block; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(28px,3.8vw,62px); letter-spacing: -0.02em; line-height: 1; }
+    #txt-vision .rw { display: block; font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(28px,3.8vw,62px); letter-spacing: -0.03em; line-height: 1; }
+
+    /* beat 5: expand possibility — centered, bigger */
     #txt-expand { left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 6vw; color: white; z-index: 25; }
-    #txt-expand .ew { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(28px,3.8vw,60px); letter-spacing: -0.03em; line-height: 1; }
-    #txt-expand .ei { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(28px,3.8vw,60px); letter-spacing: -0.02em; line-height: 1; }
+    #txt-expand .ew { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(36px,5vw,78px); letter-spacing: -0.03em; line-height: 1; }
+    #txt-expand .ei { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(36px,5vw,78px); letter-spacing: -0.02em; line-height: 1; }
 
     /* SUMMARY STAMP */
     #summary-stamp {
@@ -551,6 +557,8 @@ const txtCraft=document.getElementById('txt-craft'),txtVision=document.getElemen
 const txtExpand=document.getElementById('txt-expand');
 
 const FA_S=[0.15,0.21],FA_B=[0.38,0.48],FB_S=[0.43,0.52];
+// enforce 4:3 ratio on expanded frames
+const GAP=24; // px gap between frame edge and text
 const B=[0,0.08,0.24,0.44,0.60,0.74,0.88,1.0];
 let p1v=false,p2v=false,p3v=false,stampShown=false,finalState=false;
 
@@ -573,26 +581,65 @@ function onScroll(){
   const t5=clamp((p-B[4])/(B[5]-B[4]),0,1);
   const t6=clamp((p-B[5])/(B[6]-B[5]),0,1);
 
-  // FRAME A — centered in usable hero space (above bars)
-  const aW=lerp(FA_S[0],FA_B[0],ease(t2))*W;
-  const aH=lerp(FA_S[1],FA_B[1],ease(t2))*heroH;
+  // FRAME A — 4:3, centered in usable hero space
+  const aWraw=lerp(FA_S[0],FA_B[0],ease(t2))*W;
+  const aW=aWraw;
+  const aH=aW*(3/4);
+  const aLeft=(W-aW)/2;
+  const aTop=(heroH-aH)/2;
   frameA.style.width=aW+'px';frameA.style.height=aH+'px';
-  // center within usable area: top = (heroH - aH)/2, left = (W - aW)/2
-  frameA.style.top=((heroH-aH)/2)+'px';
-  frameA.style.left=((W-aW)/2)+'px';
+  frameA.style.top=aTop+'px';
+  frameA.style.left=aLeft+'px';
   frameA.style.transform='none';
-  frameAB.style.cssText=`position:absolute;inset:0;border:${lerp(5,8,t2)}px solid var(--yg);z-index:3;pointer-events:none;`;
+  frameAB.style.cssText=`position:absolute;inset:0;border:${lerp(4,7,t2)}px solid var(--yg);z-index:3;pointer-events:none;`;
   frameA.style.opacity=clamp(1-ease(t3)*1.8,0,1);
 
-  // FRAME B — also centered in usable hero space
-  const bW=FB_S[0]*W,bH=FB_S[1]*heroH;
-  frameB.style.width=bW+'px';frameB.style.height=bH+'px';
+  // text hugs frame A edges — both sides close to frame
+  const gap=20;
+  // left text: right-aligned, ending just before frame left edge
+  txtFl.style.right='auto';
+  txtFl.style.left='0px';
+  txtFl.style.width=(aLeft-gap)+'px';
+  txtFl.style.textAlign='right';
+  txtFl.style.top=(aTop+aH/2)+'px';
+  txtFl.style.transform='translateY(-50%)';
+  txtFl.style.paddingRight='0px';
+
+  const rTextLeft=aLeft+aW+gap;
+  txtFr.style.left=rTextLeft+'px';
+  txtFr.style.right='0px';
+  txtFr.style.top=(aTop+aH/2)+'px';
+  txtFr.style.textAlign='left';
+  txtFr.style.transform='translateY(-55%)';
+
+  // FRAME B — 4:3, slightly smaller to not cover wordmark
+  const bWraw=FB_S[0]*W*0.82;
+  const bW=bWraw;
+  const bH=bW*(3/4);
+  const bLeft=(W-bW)/2;
   const bTargetTop=(heroH-bH)/2;
   const bStartTop=H*1.15;
+  frameB.style.width=bW+'px';frameB.style.height=bH+'px';
   frameB.style.top=lerp(bStartTop,bTargetTop,ease(t3))+'px';
-  frameB.style.left=((W-bW)/2)+'px';
+  frameB.style.left=bLeft+'px';
   frameB.style.transform='none';
   frameB.style.opacity=t5>0.05?clamp(1-ease(t5)*1.6,0,1):1;
+
+  // text hugs frame B edges
+  const bCurrentTop=lerp(bStartTop,bTargetTop,ease(t3));
+  txtCraft.style.left='0px';
+  txtCraft.style.right='auto';
+  txtCraft.style.width=bLeft-gap+'px';
+  txtCraft.style.textAlign='right';
+  txtCraft.style.top=(bCurrentTop+bH/2)+'px';
+  txtCraft.style.transform='translateY(-50%)';
+
+  const vTextLeft=bLeft+bW+gap;
+  txtVision.style.left=vTextLeft+'px';
+  txtVision.style.right='0px';
+  txtVision.style.top=(bCurrentTop+bH/2)+'px';
+  txtVision.style.textAlign='left';
+  txtVision.style.transform='translateY(-55%)';
 
   // POLAROIDS
   const s1=t4>0.05,s2=t4>0.38,s3=t4>0.68;
@@ -668,13 +715,14 @@ function onScroll(){
   const W=vw(),H=vh();
   const barsH=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h'))*4;
   const heroH=H-barsH;
-  const aW=FA_S[0]*W, aH=FA_S[1]*heroH;
+  const aW=FA_S[0]*W;
+  const aH=aW*(3/4);
   frameA.style.width=aW+'px';
   frameA.style.height=aH+'px';
   frameA.style.top=((heroH-aH)/2)+'px';
   frameA.style.left=((W-aW)/2)+'px';
   frameA.style.transform='none';
-  frameAB.style.cssText='position:absolute;inset:0;border:5px solid var(--yg);z-index:3;pointer-events:none;';
+  frameAB.style.cssText='position:absolute;inset:0;border:4px solid var(--yg);z-index:3;pointer-events:none;';
 })();
 
 window.addEventListener('scroll',onScroll,{passive:true});

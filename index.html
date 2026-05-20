@@ -24,33 +24,106 @@
       cursor: none;
     }
 
-    /* CURSOR */
-    #cur {
-      width: 10px; height: 10px;
-      background: var(--black); border-radius: 50%;
+    /* ══════════════════════════════
+       MAGNETIC CURSOR
+    ══════════════════════════════ */
+    #cursor-dot {
+      width: 8px; height: 8px;
+      background: var(--black);
+      border-radius: 50%;
       position: fixed; top: 0; left: 0;
       pointer-events: none; z-index: 9999;
       transform: translate(-50%,-50%);
-      transition: width .2s, height .2s;
-      mix-blend-mode: difference;
+      transition: width .15s, height .15s, background .3s;
     }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--black);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: width .3s, height .3s, border-color .3s, opacity .3s;
+      opacity: 0.5;
+      /* lag effect via JS */
+    }
+    /* white cursor on beat 5 full bleed */
+    body.beat5 #cursor-dot { background: white; }
+    body.beat5 #cursor-ring { border-color: white; }
 
-    /* NAV */
+    /* hover states */
+    body.hovering #cursor-dot { width: 6px; height: 6px; }
+    body.hovering #cursor-ring { width: 56px; height: 56px; opacity: 0.3; }
+
+    /* ══════════════════════════════
+       SCROLL INDICATOR
+    ══════════════════════════════ */
+    #scroll-indicator {
+      position: fixed;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 6px;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    #scroll-indicator.hidden { opacity: 0; }
+    .si-line {
+      width: 1px; height: 40px;
+      background: var(--black);
+      position: relative; overflow: hidden;
+    }
+    .si-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0; right: 0;
+      height: 100%;
+      background: var(--olive);
+      animation: scrollPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+    .si-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--black);
+      transition: color 0.3s;
+    }
+    body.beat5 .si-text { color: white; }
+    body.beat5 .si-line { background: rgba(255,255,255,0.4); }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
     nav {
       position: fixed; top: 0; left: 0; right: 0;
       z-index: 300;
       display: flex; justify-content: center;
       padding: 26px 0 0;
       pointer-events: none;
+      transition: color 0.4s ease;
     }
     .wm { font-size: 14px; line-height: 1; pointer-events: auto; }
-    .wm-b { font-family: 'Roboto', sans-serif; font-weight: 900; letter-spacing: -0.04em; }
-    .wm-i { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; }
+    .wm-b { font-family: 'Roboto', sans-serif; font-weight: 900; letter-spacing: -0.04em; transition: color 0.4s; }
+    .wm-i { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; transition: color 0.4s; }
+    /* white wordmark on beat 5 */
+    body.beat5 .wm-b,
+    body.beat5 .wm-i { color: white; }
+    /* beat 6 final zoom — wordmark top right in white */
+    body.beat6 nav { justify-content: flex-end; padding-right: 40px; }
+    body.beat6 .wm-b,
+    body.beat6 .wm-i { color: white; }
 
     /* ══════════════════════════════
        SCROLL STAGE
     ══════════════════════════════ */
-    #scroll-stage { height: 700vh; position: relative; }
+    #scroll-stage { height: 800vh; position: relative; }
 
     #sticky-hero {
       position: sticky; top: 0;
@@ -66,19 +139,12 @@
       transform: translate(-50%, -50%);
       z-index: 10; overflow: hidden;
     }
-    #frame-a-border {
-      position: absolute; inset: 0;
-      z-index: 3; pointer-events: none;
-    }
-    #frame-a img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
+    #frame-a-border { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+    #frame-a img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     /* FRAME B */
     #frame-b {
-      position: absolute;
-      left: 50%; top: 120vh;
+      position: absolute; left: 50%; top: 120vh;
       transform: translateX(-50%);
       z-index: 11; overflow: hidden;
     }
@@ -87,10 +153,7 @@
       border: 7px solid var(--olive);
       z-index: 3; pointer-events: none;
     }
-    #frame-b img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
+    #frame-b img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     /* polaroids */
     #polaroids {
@@ -119,6 +182,8 @@
     #center-expand video {
       width: 100%; height: 100%;
       object-fit: cover; display: block;
+      /* zoom driven by JS transform */
+      transform-origin: center center;
     }
     #ce-border {
       position: absolute; inset: 0;
@@ -126,14 +191,13 @@
       z-index: 3; pointer-events: none;
     }
 
-    /* TEXT LAYERS */
-    .ht {
-      position: absolute;
-      opacity: 0; pointer-events: none; z-index: 20;
-    }
+    /* ══════════════════════════════
+       TEXT LAYERS
+    ══════════════════════════════ */
+    .ht { position: absolute; opacity: 0; pointer-events: none; z-index: 20; }
 
     #txt-scroll {
-      bottom: 36px; left: 50%;
+      bottom: 88px; left: 50%;
       transform: translateX(-50%);
       font-family: 'Playfair Display', serif;
       font-style: italic; font-size: 12px;
@@ -141,7 +205,6 @@
       display: flex; align-items: center; gap: 8px;
       white-space: nowrap;
     }
-    #txt-scroll svg { width: 12px; height: 12px; }
 
     #txt-fl {
       left: 6vw; top: 50%;
@@ -176,7 +239,6 @@
       letter-spacing: -0.03em; line-height: 1;
     }
 
-    /* "the vision/" together, right-aligned, same as "your story/" */
     #txt-vision {
       right: 5vw; top: 50%;
       transform: translateY(-65%); text-align: right;
@@ -195,6 +257,7 @@
       letter-spacing: -0.03em; line-height: 1;
     }
 
+    /* beat 5: expand possibility — white */
     #txt-expand {
       left: 0; right: 0; top: 50%;
       transform: translateY(-50%);
@@ -206,23 +269,26 @@
       font-family: 'Roboto', sans-serif; font-weight: 400;
       font-size: clamp(36px, 5vw, 80px);
       letter-spacing: -0.03em; line-height: 1;
+      transition: transform 0.6s ease, opacity 0.6s ease;
     }
     #txt-expand .ei {
       font-family: 'Playfair Display', serif;
       font-style: italic; font-weight: 400;
       font-size: clamp(36px, 5vw, 80px);
       letter-spacing: -0.02em; line-height: 1;
+      transition: transform 0.6s ease, opacity 0.6s ease;
     }
 
     /* ══════════════════════════════
-       SECTIONS WRAP
+       SECTIONS WRAP — peeks from below
     ══════════════════════════════ */
     #sections-wrap {
       position: fixed;
       top: 0; left: 0; right: 0;
       height: 100vh;
       z-index: 100;
-      transform: translateY(100vh);
+      /* starts peeking — shows ~15vh of bars at bottom */
+      transform: translateY(85vh);
       overflow-y: auto;
       background: var(--off-white);
       will-change: transform;
@@ -230,8 +296,7 @@
 
     /* summary stamp */
     #summary-stamp {
-      display: flex;
-      justify-content: flex-end;
+      display: flex; justify-content: flex-end;
       padding: 18px 40px 10px;
       opacity: 0;
       transition: opacity 0.8s ease 0.3s;
@@ -239,9 +304,7 @@
       background: var(--off-white);
     }
     #summary-stamp.visible { opacity: 1; }
-    #summary-stamp .stamp-inner {
-      text-align: right;
-    }
+    #summary-stamp .stamp-inner { text-align: right; }
     #summary-stamp span {
       display: block;
       font-family: 'Roboto', sans-serif; font-weight: 400;
@@ -257,7 +320,6 @@
        ACCORDION
     ══════════════════════════════ */
     #sections { position: relative; z-index: 1; }
-
     .ai { overflow: hidden; border-top: 1px solid rgba(0,0,0,.15); }
     .ai:last-child { border-bottom: 1px solid rgba(0,0,0,.15); }
     .a1 { background: var(--olive); color: var(--off-white); }
@@ -265,12 +327,11 @@
     .a3 { background: var(--black); color: var(--off-white); }
     .a4 { background: var(--off-white); color: var(--black); }
 
-    /* Option A: min-height on collapsed bars so 4 bars fill viewport */
     .ah {
       display: flex; align-items: center;
       padding: 0 40px;
-      min-height: calc((100vh - 80px) / 4); /* 80px = stamp height approx */
-      cursor: pointer; user-select: none;
+      min-height: calc((100vh - 80px) / 4);
+      cursor: none; user-select: none;
       gap: 20px; background: transparent;
     }
     .an {
@@ -291,8 +352,6 @@
     .ab { max-height: 0; overflow: hidden; transition: max-height .65s cubic-bezier(.16,1,.3,1); }
     .ai.open .ab { max-height: 3200px; }
     .ain { padding: 32px 40px 56px; }
-
-    /* two col grid */
     .sg { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 60px; align-items: start; }
 
     .sb {
@@ -328,25 +387,18 @@
       line-height: 1.2; letter-spacing: -.01em;
     }
 
-    /* section images — sec-02 is the size reference */
     .si-ref {
-      /* matches sec-02 sis: max-width 220px, 4:3 */
-      display: block;
-      width: 100%; max-width: 220px;
-      aspect-ratio: 4/3;
-      object-fit: cover; opacity: .93;
+      display: block; width: 100%; max-width: 220px;
+      aspect-ratio: 4/3; object-fit: cover; opacity: .93;
     }
     .a1 .si-ref { border: 2px solid var(--off-white); }
     .a2 .si-ref { border: 2px solid var(--black); }
     .a3 .si-ref { border: 2px solid var(--off-white); }
     .a4 .si-ref { border: 2px solid var(--black); }
 
-    /* sec-03 two stacked images right col */
     .si-stack {
-      display: block;
-      width: 100%; max-width: 220px;
-      aspect-ratio: 16/10;
-      object-fit: cover; opacity: .93;
+      display: block; width: 100%; max-width: 220px;
+      aspect-ratio: 16/10; object-fit: cover; opacity: .93;
       border: 2px solid var(--off-white);
     }
 
@@ -371,7 +423,7 @@
     }
 
     @media (max-width: 768px) {
-      #scroll-stage { height: 600vh; }
+      #scroll-stage { height: 700vh; }
       #txt-fl, #txt-craft { left: 4vw; font-size: clamp(30px, 9vw, 56px); }
       #txt-fr, #txt-vision { right: 4vw; }
       #txt-fr .iw, #txt-fr .rw,
@@ -381,14 +433,21 @@
       .ain { padding: 28px 20px 44px; }
       .sg { grid-template-columns: 1fr; gap: 24px; }
       .rlb { width: 110px; }
-      #summary-stamp { padding: 14px 20px 8px; }
       footer { flex-direction: column; gap: 6px; text-align: center; padding: 18px; }
     }
   </style>
 </head>
 <body>
 
-<div id="cur"></div>
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- SCROLL INDICATOR -->
+<div id="scroll-indicator">
+  <div class="si-line"></div>
+  <span class="si-text">scroll</span>
+</div>
 
 <nav>
   <div class="wm">
@@ -417,16 +476,9 @@
 
     <div id="center-expand">
       <div id="ce-border"></div>
-      <video autoplay loop muted playsinline src="hero-center.mp4"></video>
+      <video id="hero-video" autoplay loop muted playsinline src="hero-center.mp4"></video>
     </div>
 
-    <!-- text -->
-    <div id="txt-scroll" class="ht">
-      <svg viewBox="0 0 12 12" fill="none">
-        <path d="M6 1v10M1 6l5 5 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      scroll
-    </div>
     <div id="txt-fl" class="ht">we find</div>
     <div id="txt-fr" class="ht">
       <span class="iw">your</span>
@@ -447,8 +499,6 @@
 
 <!-- ═══════ SECTIONS ═══════ -->
 <div id="sections-wrap">
-
-  <!-- summary stamp — top of sections screen, permanent once visible -->
   <div id="summary-stamp">
     <div class="stamp-inner">
       <span>we find <em>your</em> story/</span>
@@ -459,16 +509,15 @@
 
   <div id="sections">
 
-    <!-- 01 THE STUDIO -->
+    <!-- 01 -->
     <div class="ai a1">
-      <div class="ah" onclick="tog(this)">
+      <div class="ah" onclick="jumpToSections()">
         <span class="an">01</span>
         <span class="at">THE STUDIO / OUR SERVICES</span>
         <span class="atg">+</span>
       </div>
       <div class="ab"><div class="ain">
         <div class="sg">
-          <!-- LEFT: tldr rhythm block only -->
           <div>
             <div class="tl">tldr</div>
             <div class="rb">
@@ -479,9 +528,7 @@
               <div class="rl"><span class="rlb">across</span><span class="rlv">global audiences / in english / en español</span></div>
             </div>
           </div>
-          <!-- RIGHT: pull quote + small photo top right + body copy -->
           <div>
-            <!-- top row: pull quote left, photo right -->
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:28px;">
               <div class="pq" style="flex:1">Story.<br/>Not content.<br/>There's a difference.</div>
               <div style="flex-shrink:0">
@@ -500,9 +547,9 @@
       </div></div>
     </div>
 
-    <!-- 02 THE FWD METHOD -->
+    <!-- 02 -->
     <div class="ai a2">
-      <div class="ah" onclick="tog(this)">
+      <div class="ah" onclick="jumpToSections()">
         <span class="an">02</span>
         <span class="at">THE FWD METHOD / HOW WE WORK</span>
         <span class="atg">+</span>
@@ -534,16 +581,15 @@
       </div></div>
     </div>
 
-    <!-- 03 THE CONVICTION -->
+    <!-- 03 -->
     <div class="ai a3">
-      <div class="ah" onclick="tog(this)">
+      <div class="ah" onclick="jumpToSections()">
         <span class="an">03</span>
         <span class="at">THE CONVICTION / OUR MISSION</span>
         <span class="atg">+</span>
       </div>
       <div class="ab"><div class="ain">
         <div class="sg">
-          <!-- LEFT: body + tldr founder block (melissa photo + rhythm rows side by side) -->
           <div>
             <div class="sb">
               <p>This studio wasn't an idea. It was a conclusion after years of watching extraordinary stories get approved in concept and killed at the budget proposal. Great stories require craft, expertise, artistry, and talent in remarkable symbiosis — that's what makes them extraordinary, and what prices most people out of telling them well.</p>
@@ -551,7 +597,6 @@
               <p>fwd slash/studio exists in that gap — using innovative tools to bridge access to premium storytelling without sacrificing what makes it worth making.</p>
               <p>The slash in our name isn't decoration. It holds opposites in the same breath: craft and innovation / tradition and technology / access and quality. In every URL it's how you navigate forward. In a fraction it's the ratio between two things. That tension is where the best stories live. It's where we work.</p>
             </div>
-            <!-- tldr founder block: melissa photo left + rhythm rows right -->
             <div style="margin-top:36px">
               <div class="tl">tldr</div>
               <div style="display:flex; gap:20px; align-items:flex-start; margin-top:12px">
@@ -568,7 +613,6 @@
               </div>
             </div>
           </div>
-          <!-- RIGHT: two stacked images, sec-02 width -->
           <div style="display:flex; flex-direction:column; gap:16px; align-items:flex-start">
             <img src="sec-03a.jpg" alt="" class="si-stack" style="transform:rotate(1deg)"/>
             <img src="sec-03b.jpg" alt="" class="si-stack" style="transform:rotate(-.5deg)"/>
@@ -577,9 +621,9 @@
       </div></div>
     </div>
 
-    <!-- 04 THE FIRST SPARK -->
+    <!-- 04 -->
     <div class="ai a4">
-      <div class="ah" onclick="tog(this)">
+      <div class="ah" onclick="jumpToSections()">
         <span class="an">04</span>
         <span class="at">THE FIRST SPARK / GET IN TOUCH</span>
         <span class="atg">+</span>
@@ -602,28 +646,49 @@
       </div></div>
     </div>
 
-  </div><!-- #sections -->
+  </div>
 
   <footer>
     <span>© 2025 fwd slash/studio</span>
     <span>Based in Dubai · Working Globally</span>
   </footer>
-
-</div><!-- #sections-wrap -->
+</div>
 
 <script>
-// ── CURSOR
-const cur = document.getElementById('cur');
+// ══════════════════════════════
+// MAGNETIC CURSOR
+// ══════════════════════════════
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+
+let mouseX = 0, mouseY = 0;
+let ringX  = 0, ringY  = 0;
+
 document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px';
-  cur.style.top  = e.clientY + 'px';
-});
-document.querySelectorAll('a, .ah').forEach(el => {
-  el.addEventListener('mouseenter', () => { cur.style.width='28px'; cur.style.height='28px'; });
-  el.addEventListener('mouseleave', () => { cur.style.width='10px'; cur.style.height='10px'; });
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  dot.style.left = mouseX + 'px';
+  dot.style.top  = mouseY + 'px';
 });
 
-// ── ACCORDION
+// lag ring behind mouse
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  ring.style.left = ringX + 'px';
+  ring.style.top  = ringY + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, .ah, button').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+});
+
+// ══════════════════════════════
+// ACCORDION — proper toggle
+// ══════════════════════════════
 function tog(h) {
   const item = h.parentElement;
   const was  = item.classList.contains('open');
@@ -631,47 +696,63 @@ function tog(h) {
   if (!was) item.classList.add('open');
 }
 
-// ── HELPERS
+// clicking bar when sections not yet fully up = jump to sections
+function jumpToSections() {
+  const stage   = document.getElementById('scroll-stage');
+  const stageTop = stage.getBoundingClientRect().top + window.scrollY;
+  // scroll to 95% of scroll stage to trigger full sections slide
+  window.scrollTo({ top: stageTop + stage.offsetHeight * 0.97, behavior: 'smooth' });
+}
+
+// ══════════════════════════════
+// HELPERS
+// ══════════════════════════════
 function lerp(a, b, t) { return a + (b - a) * Math.max(0, Math.min(1, t)); }
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
 
-// ── ELEMENTS
-const stage     = document.getElementById('scroll-stage');
-const frameA    = document.getElementById('frame-a');
-const frameAB   = document.getElementById('frame-a-border');
-const frameB    = document.getElementById('frame-b');
-const centerExp = document.getElementById('center-expand');
-const ceBorder  = document.getElementById('ce-border');
-const sectWrap  = document.getElementById('sections-wrap');
-const stamp     = document.getElementById('summary-stamp');
+// ══════════════════════════════
+// ELEMENTS
+// ══════════════════════════════
+const stage      = document.getElementById('scroll-stage');
+const frameA     = document.getElementById('frame-a');
+const frameAB    = document.getElementById('frame-a-border');
+const frameB     = document.getElementById('frame-b');
+const centerExp  = document.getElementById('center-expand');
+const ceBorder   = document.getElementById('ce-border');
+const heroVideo  = document.getElementById('hero-video');
+const sectWrap   = document.getElementById('sections-wrap');
+const stamp      = document.getElementById('summary-stamp');
+const scrollInd  = document.getElementById('scroll-indicator');
 const pol1 = document.getElementById('pol1');
 const pol2 = document.getElementById('pol2');
 const pol3 = document.getElementById('pol3');
 
-const txtScroll = document.getElementById('txt-scroll');
 const txtFl     = document.getElementById('txt-fl');
 const txtFr     = document.getElementById('txt-fr');
 const txtCraft  = document.getElementById('txt-craft');
 const txtVision = document.getElementById('txt-vision');
 const txtExpand = document.getElementById('txt-expand');
+const txtExpandEw = txtExpand.querySelector('.ew');
+const txtExpandEi = txtExpand.querySelector('.ei');
 
-// frame sizes as viewport fractions [w, h]
-const FA_S = [0.19, 0.26]; // small
-const FA_B = [0.44, 0.56]; // expanded
-const FB_S = [0.50, 0.62]; // frame B
+const FA_S = [0.19, 0.26];
+const FA_B = [0.44, 0.56];
+const FB_S = [0.50, 0.62];
 
-// beat boundaries 0..1
-// B0→B1: beat1 small frame + scroll hint
-// B1→B2: beat2 frame expands — text waits until midway
-// B2→B3: beat3 frame B slides up, find text overlaps & fades
-// B3→B4: beat4 polaroids + craft/the vision/
-// B4→B5: beat5 center expand to full bleed
-// B5→B6: beat6 sections slide up
-const B = [0, 0.09, 0.28, 0.52, 0.70, 0.84, 1.0];
+// beat boundaries — now 7 beats (added beat 6 = zoom)
+// B0→B1: beat1 small frame
+// B1→B2: beat2 frame expands
+// B2→B3: beat3 frame B slides up
+// B3→B4: beat4 polaroids
+// B4→B5: beat5 expand possibility full bleed
+// B5→B6: beat6 words slide up, video zooms to face
+// B6→B7: beat7 sections slide up
+const B = [0, 0.08, 0.24, 0.44, 0.60, 0.72, 0.84, 1.0];
 
 let p1v=false, p2v=false, p3v=false;
 let stampShown = false;
+let currentBeat = 0;
 
 function vw(){ return window.innerWidth; }
 function vh(){ return window.innerHeight; }
@@ -695,6 +776,7 @@ function onScroll() {
   const t4 = clamp((p - B[3]) / (B[4] - B[3]), 0, 1);
   const t5 = clamp((p - B[4]) / (B[5] - B[4]), 0, 1);
   const t6 = clamp((p - B[5]) / (B[6] - B[5]), 0, 1);
+  const t7 = clamp((p - B[6]) / (B[7] - B[6]), 0, 1);
 
   // ── FRAME A
   const aW = lerp(FA_S[0], FA_B[0], ease(t2)) * W;
@@ -704,7 +786,7 @@ function onScroll() {
   frameAB.style.cssText = `position:absolute;inset:0;border:${lerp(5,8,t2)}px solid var(--yg);z-index:3;pointer-events:none;`;
   frameA.style.opacity = clamp(1 - ease(t3) * 1.8, 0, 1);
 
-  // ── FRAME B slide up
+  // ── FRAME B
   const bW = FB_S[0] * W, bH = FB_S[1] * H;
   frameB.style.width  = bW + 'px';
   frameB.style.height = bH + 'px';
@@ -714,13 +796,13 @@ function onScroll() {
   frameB.style.transform = 'translateX(-50%)';
   frameB.style.opacity   = t5 > 0.05 ? clamp(1 - ease(t5) * 1.6, 0, 1) : 1;
 
-  // ── POLAROIDS — staggered beat 4
+  // ── POLAROIDS
   const s1 = t4 > 0.05, s2 = t4 > 0.38, s3 = t4 > 0.68;
   if (s1 !== p1v) { p1v=s1; pol1.classList.toggle('visible', s1); }
   if (s2 !== p2v) { p2v=s2; pol2.classList.toggle('visible', s2); }
   if (s3 !== p3v) { p3v=s3; pol3.classList.toggle('visible', s3); }
 
-  // ── CENTER EXPAND beat 5
+  // ── CENTER EXPAND (beat 5)
   if (t5 > 0 && p2v) {
     const cpb = getPol2Bounds();
     if (cpb) {
@@ -734,49 +816,74 @@ function onScroll() {
       ceBorder.style.borderWidth = lerp(4, 0, et) + 'px';
       ceBorder.style.opacity     = clamp(1 - et * 2.5, 0, 1);
     }
-  } else {
+  } else if (t5 === 0) {
     centerExp.style.opacity = '0';
     centerExp.style.pointerEvents = 'none';
   }
 
-  // ── SECTIONS SLIDE UP beat 6
-  sectWrap.style.transform = `translateY(${lerp(100, 0, ease(t6))}vh)`;
+  // ── BEAT 6: words slide up + video zooms to face
+  if (t6 > 0) {
+    // video zooms in slowly — scale 1 → 1.25, centered
+    const zoomScale = lerp(1, 1.25, ease(t6));
+    heroVideo.style.transform = `scale(${zoomScale})`;
+    heroVideo.style.transformOrigin = 'center 35%'; // zoom toward face (upper portion)
+  } else {
+    heroVideo.style.transform = 'scale(1)';
+  }
 
-  // stamp appears once fully slid up
-  if (t6 >= 1 && !stampShown) {
+  // ── SECTIONS SLIDE UP (beat 7)
+  // starts peeking at 85vh, slides to 0
+  const peekStart = 85;
+  const slideY = lerp(peekStart, 0, ease(t7));
+  sectWrap.style.transform = `translateY(${slideY}vh)`;
+
+  // stamp
+  if (t7 >= 1 && !stampShown) {
     stampShown = true;
     stamp.classList.add('visible');
-  } else if (t6 < 1 && stampShown) {
+  } else if (t7 < 1 && stampShown) {
     stampShown = false;
     stamp.classList.remove('visible');
   }
 
+  // ── BODY CLASS for cursor/nav color
+  if (t5 > 0.3 && t7 < 0.5) {
+    document.body.classList.add('beat5');
+    document.body.classList.remove('beat6');
+  } else if (t6 > 0.5) {
+    document.body.classList.remove('beat5');
+    document.body.classList.add('beat6');
+  } else {
+    document.body.classList.remove('beat5', 'beat6');
+  }
+
+  // ── SCROLL INDICATOR hides after beat 2
+  if (t2 > 0.3) {
+    scrollInd.classList.add('hidden');
+  } else {
+    scrollInd.classList.remove('hidden');
+  }
+
   // ── TEXT OPACITIES
 
-  // scroll hint
-  txtScroll.style.opacity = clamp(1 - t2 * 5, 0, 1);
-
-  // "we find your story/" — fades in AFTER frame is 50% expanded (t2 > 0.5)
-  // fades out mid beat3
-  const findIn  = clamp((t2 - 0.5) * 4, 0, 1); // starts at 50% of beat2
+  // "we find your story/" — after 50% of beat2, fades mid beat3
+  const findIn  = clamp((t2 - 0.5) * 4, 0, 1);
   const findOut = clamp(1 - (t3 - 0.4) * 3, 0, 1);
   txtFl.style.opacity = findIn * findOut;
   txtFr.style.opacity = findIn * findOut;
 
-  // "craft" — with pol1 (t4 > 0.05), fades out beat5
-  const craftIn  = clamp((t4 - 0.05) * 5, 0, 1);
-  const craftOut = clamp(1 - t5 * 2.5, 0, 1);
-  txtCraft.style.opacity = craftIn * craftOut;
+  // "craft" with pol1, fades beat5
+  txtCraft.style.opacity = clamp((t4 - 0.05) * 5, 0, 1) * clamp(1 - t5 * 2.5, 0, 1);
 
-  // "the vision/" together — with pol2 (t4 > 0.38), fades out beat5
-  const visIn  = clamp((t4 - 0.38) * 5, 0, 1);
-  const visOut = clamp(1 - t5 * 2.5, 0, 1);
-  txtVision.style.opacity = visIn * visOut;
+  // "the vision/" with pol2, fades beat5
+  txtVision.style.opacity = clamp((t4 - 0.38) * 5, 0, 1) * clamp(1 - t5 * 2.5, 0, 1);
 
-  // "expand possibility" — mid beat5, fades before sections
+  // "expand possibility" — fades in mid beat5, slides UP during beat6
   const expIn  = clamp((t5 - 0.3) * 3, 0, 1);
-  const expOut = clamp(1 - t6 * 4, 0, 1);
-  txtExpand.style.opacity = expIn * expOut;
+  const expOut = clamp(1 - t7 * 4, 0, 1);
+  const expSlideUp = ease(t6) * -80; // slides up 80px during beat6
+  txtExpand.style.opacity   = expIn * expOut;
+  txtExpand.style.transform = `translateY(calc(-50% + ${expSlideUp}px))`;
 }
 
 // ── INIT
@@ -785,8 +892,7 @@ function onScroll() {
   frameA.style.width  = (FA_S[0] * W) + 'px';
   frameA.style.height = (FA_S[1] * H) + 'px';
   frameAB.style.cssText = 'position:absolute;inset:0;border:5px solid var(--yg);z-index:3;pointer-events:none;';
-  txtScroll.style.opacity  = '1';
-  sectWrap.style.transform = 'translateY(100vh)';
+  sectWrap.style.transform = 'translateY(85vh)';
 })();
 
 window.addEventListener('scroll', onScroll, { passive: true });

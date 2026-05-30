@@ -1,364 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>fwd slash/studio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --off-white: #fffdfd;
-      --black: #000000;
-      --olive: #879800;
-      --yg: #f5fd97;
-      --bar-h: 50px;
-      --bars-total: calc(var(--bar-h) * 4);
-    }
-    html { scroll-behavior: auto; }
-    body {
-      background: var(--off-white);
-      color: var(--black);
-      font-family: 'Roboto', sans-serif;
-      overflow-x: hidden;
-      cursor: none;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>fwd slash/studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ow:#fffdfd;--bk:#000;--ol:#879800;--yg:#f5fd97;
+  --bh:50px;--bt:calc(var(--bh)*4);
+}
+html{scroll-behavior:auto}
+body{background:var(--ow);color:var(--bk);font-family:'Roboto',sans-serif;overflow-x:hidden;cursor:none}
 
-    /* CURSOR */
-    #cursor-dot {
-      width: 8px; height: 8px; background: var(--black); border-radius: 50%;
-      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
-      transform: translate(-50%,-50%); transition: width .15s, height .15s, background .3s;
-    }
-    #cursor-ring {
-      width: 36px; height: 36px; border: 1.5px solid rgba(0,0,0,0.35); border-radius: 50%;
-      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998;
-      transform: translate(-50%,-50%); opacity: 0.5; transition: border-color .3s;
-    }
-    body.vid-cur #cursor-dot { background: white; }
-    body.vid-cur #cursor-ring { border-color: rgba(255,255,255,0.45); }
-    body.hovering #cursor-dot { width: 6px; height: 6px; }
-    body.hovering #cursor-ring { width: 52px; height: 52px; opacity: 0.2; }
+/* CURSOR */
+#cd{width:8px;height:8px;background:var(--bk);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:background .3s}
+#cr{width:36px;height:36px;border:1.5px solid rgba(0,0,0,.35);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.5;transition:border-color .3s}
+body.vc #cd{background:white}
+body.vc #cr{border-color:rgba(255,255,255,.4)}
 
-    /* SCROLL INDICATOR — CSS default = beat0: centered, tall */
-    #scroll-indicator {
-      position: fixed;
-      left: 50%; top: calc(50% + 38px);
-      transform: translateX(-50%);
-      z-index: 202; display: flex; flex-direction: column;
-      align-items: center; gap: 5px;
-      pointer-events: none; opacity: 1;
-    }
-    #scroll-indicator.hidden { opacity: 0; }
-    .si-line {
-      width: 1px; height: 48px;
-      background: rgba(0,0,0,0.18);
-      position: relative; overflow: hidden;
-    }
-    body.video-cur .si-line { background: rgba(255,255,255,0.25); }
-    .si-line::after {
-      content: ''; position: absolute; top: -100%;
-      left: 0; right: 0; height: 100%; background: var(--olive);
-      animation: scrollPulse 1.8s ease-in-out infinite;
-    }
-    body.video-cur .si-line::after { background: var(--yg); }
-    @keyframes scrollPulse { 0%{top:-100%} 100%{top:100%} }
-    .si-text {
-      font-family: 'Playfair Display', serif; font-style: italic;
-      font-size: 11px; letter-spacing: 0.08em; color: rgba(0,0,0,0.35);
-    }
-    body.video-cur .si-text { color: rgba(255,255,255,0.4); }
+/* WORDMARK — CSS default = beat0: centered */
+#wm{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:26px;z-index:300;
+  pointer-events:none;line-height:1;white-space:nowrap;
+}
+#wm .wb{font-family:'Roboto',sans-serif;font-weight:900;letter-spacing:-.04em;color:var(--bk)}
+#wm .wi{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;color:var(--bk)}
+#wm.ww .wb,#wm.ww .wi{color:white}
 
-    /* nav removed — replaced by #wm-single */
+/* SCROLL INDICATOR — CSS default = beat0: above wordmark center */
+#si{
+  position:fixed;
+  /* sits above the wordmark: wordmark center is 50vh, wordmark ~26px tall,
+     so bottom of indicator = 50vh - 13px - 8px gap */
+  bottom:calc(50% + 21px);
+  left:50%;transform:translateX(-50%);
+  z-index:202;display:flex;flex-direction:column;
+  align-items:center;gap:5px;pointer-events:none;
+}
+#si.hid{opacity:0}
+.sil{width:1px;height:48px;background:rgba(0,0,0,.18);position:relative;overflow:hidden}
+.sil::after{content:'';position:absolute;top:-100%;left:0;right:0;height:100%;background:var(--ol);animation:sp 1.8s ease-in-out infinite}
+@keyframes sp{0%{top:-100%}100%{top:100%}}
+.sit{font-family:'Playfair Display',serif;font-style:italic;font-size:11px;letter-spacing:.08em;color:rgba(0,0,0,.35)}
+body.vc .sil{background:rgba(255,255,255,.25)}
+body.vc .sil::after{background:var(--yg)}
+body.vc .sit{color:rgba(255,255,255,.4)}
 
-    /* LARGE WORDMARK */
-    #wm-large {
-      position: fixed; bottom: calc(var(--bars-total) + 24px); left: 4vw;
-      z-index: 103; opacity: 0; pointer-events: none; line-height: 1;
-    }
-    #wm-large.hidden-wm { opacity: 0 !important; }
-    .wml-b { font-family: 'Roboto', sans-serif; font-weight: 900; letter-spacing: -0.04em; font-size: clamp(52px,7vw,110px); color: white; }
-    .wml-i { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(52px,7vw,110px); color: white; }
+/* LARGE WORDMARK */
+#wml{position:fixed;bottom:calc(var(--bt)+24px);left:4vw;z-index:103;opacity:0;pointer-events:none;line-height:1}
+#wml.hwm{opacity:0!important}
+.wlb{font-family:'Roboto',sans-serif;font-weight:900;letter-spacing:-.04em;font-size:clamp(52px,7vw,110px);color:white}
+.wli{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(52px,7vw,110px);color:white}
 
-    /* VIDEO GRADIENT */
-    #video-gradient {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 70%; z-index: 17;
-      background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 25%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.75) 100%);
-      opacity: 0; pointer-events: none;
-    }
+/* VIDEO GRADIENT */
+#vg{position:fixed;bottom:0;left:0;right:0;height:70%;z-index:17;
+  background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.1) 25%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.75) 100%);
+  opacity:0;pointer-events:none}
 
-    /* STAMP */
-    #summary-stamp {
-      position: fixed; bottom: calc(var(--bars-total) + 28px); right: 4vw;
-      z-index: 103; opacity: 0; transition: opacity 0.8s ease 0.3s;
-      text-align: right; line-height: 1.7; pointer-events: none;
-    }
-    #summary-stamp.visible { opacity: 1; }
-    #summary-stamp span { display: block; font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(10px,0.9vw,12px); letter-spacing: -0.01em; color: rgba(255,255,255,0.45); }
-    #summary-stamp span em { font-family: 'Playfair Display', serif; font-style: italic; }
+/* STAMP */
+#st{position:fixed;bottom:calc(var(--bt)+28px);right:4vw;z-index:103;opacity:0;transition:opacity .8s ease .3s;text-align:right;line-height:1.7;pointer-events:none}
+#st.vis{opacity:1}
+#st span{display:block;font-family:'Roboto',sans-serif;font-weight:400;font-size:clamp(10px,.9vw,12px);color:rgba(255,255,255,.45)}
+#st span em{font-family:'Playfair Display',serif;font-style:italic}
 
-    /* SCROLL STAGE */
-    #scroll-stage { height: 900vh; position: relative; }
-    #sticky-hero {
-      position: sticky; top: 0; height: 100vh; width: 100%;
-      overflow: hidden; background: var(--off-white);
-    }
+/* SCROLL STAGE */
+#ss{height:900vh;position:relative}
+#sh{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--ow);transition:background .3s}
 
-    /* SINGLE WORDMARK — CSS default = beat0: large, truly centered */
-    #wm-single {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 26px;
-      z-index: 300; pointer-events: none;
-      line-height: 1; white-space: nowrap;
-    }
-    #wm-single .wm-b {
-      font-family: 'Roboto', sans-serif; font-weight: 900;
-      letter-spacing: -0.04em; color: var(--black);
-    }
-    #wm-single .wm-i {
-      font-family: 'Playfair Display', serif; font-style: italic;
-      font-weight: 400; color: var(--black);
-    }
-    #wm-single.wm-white .wm-b,
-    #wm-single.wm-white .wm-i { color: white; }
-      position: absolute; z-index: 10; overflow: hidden;
-      border-radius: 12px;
-    }
-    #img-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* HERO IMAGES */
+#ima{position:absolute;z-index:10;overflow:hidden;border-radius:12px;opacity:0}
+#ima img{width:100%;height:100%;object-fit:cover;display:block}
 
-    /* PHONE FRAME — thin yg portrait, stays center, shows cropped desk area */
-    #phone-frame {
-      position: absolute; z-index: 12; overflow: hidden;
-      border: 2.5px solid var(--yg);
-      border-radius: 14px;
-      opacity: 0;
-    }
-    #phone-frame img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
+/* PHONE FRAME — thin yg portrait, positioned over photo */
+#pf{position:absolute;z-index:12;border:2.5px solid var(--yg);border-radius:14px;opacity:0;overflow:hidden;pointer-events:none}
+#pf img{width:100%;height:100%;object-fit:cover;object-position:35% 52%;display:block}
 
-    /* THREE SQUARES */
-    .sq {
-      position: absolute; z-index: 11; overflow: hidden;
-      border-radius: 10px; opacity: 0;
-    }
-    .sq img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    #sq1 { }
-    #sq2 { }
-    #sq3 { }
+/* THREE SQUARES */
+.sq{position:absolute;z-index:11;overflow:hidden;border-radius:10px;opacity:0}
+.sq img{width:100%;height:100%;object-fit:cover;display:block}
 
-    /* CENTER EXPAND */
-    #center-expand {
-      position: fixed; z-index: 16; overflow: hidden;
-      opacity: 0; pointer-events: none; border-radius: 10px;
-    }
-    #center-expand video { width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: center 32%; }
-    #ce-border { position: absolute; inset: 0; border-radius: 10px; z-index: 3; pointer-events: none; }
+/* CENTER EXPAND — video */
+#ce{position:fixed;z-index:16;overflow:hidden;opacity:0;pointer-events:none;border-radius:10px}
+#ce video{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center 32%;
+  transition:filter 1.2s ease}
+#ce video.bw{filter:grayscale(100%)}
 
-    /* TEXT */
-    .ht { position: absolute; opacity: 0; pointer-events: none; z-index: 20; }
-    .th { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(30px,4.2vw,68px); letter-spacing: -0.03em; line-height: 1; }
-    .thi { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(30px,4.2vw,68px); letter-spacing: -0.02em; line-height: 1; }
+/* TEXT */
+.ht{position:absolute;opacity:0;pointer-events:none;z-index:20}
+.th{font-family:'Roboto',sans-serif;font-weight:400;font-size:clamp(30px,4.2vw,68px);letter-spacing:-.03em;line-height:1}
+.thi{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(30px,4.2vw,68px);letter-spacing:-.02em;line-height:1}
+#te{left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 6vw;color:white;z-index:25}
+#te .ew{font-family:'Roboto',sans-serif;font-weight:400;font-size:clamp(34px,4.8vw,76px);letter-spacing:-.03em;line-height:1}
+#te .ei{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(34px,4.8vw,76px);letter-spacing:-.02em;line-height:1}
 
-    #txt-we-find { }
-    #txt-your .iw { display: block; }
-    #txt-your .rw { display: block; }
-    #txt-craft { }
-    #txt-the { }
-    #txt-vision { }
-    #txt-expand {
-      left: 0; right: 0;
-      /* centered vertically in usable hero — JS overrides top */
-      display: flex; justify-content: space-between;
-      align-items: center; padding: 0 6vw;
-      color: white; z-index: 25;
-    }
-    #txt-expand .ew { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(34px,4.8vw,76px); letter-spacing: -0.03em; line-height: 1; }
-    #txt-expand .ei { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: clamp(34px,4.8vw,76px); letter-spacing: -0.02em; line-height: 1; }
+/* DOCKED BARS */
+#bd{position:fixed;bottom:0;left:0;right:0;z-index:200}
+.bar{display:flex;align-items:center;height:var(--bh);padding:0 40px;cursor:none;user-select:none;gap:20px}
+.b1{background:var(--ol);color:var(--ow);border-top:1px solid rgba(255,255,255,.1)}
+.b2{background:var(--yg);color:var(--bk);border-top:1px solid rgba(0,0,0,.08)}
+.b3{background:var(--bk);color:var(--ow);border-top:1px solid rgba(255,255,255,.08)}
+.b4{background:var(--ow);color:var(--bk);border-top:1px solid rgba(0,0,0,.1)}
+.bn{font-family:'Playfair Display',serif;font-style:italic;font-size:12px;opacity:.6;flex-shrink:0;width:24px}
+.bt{font-family:'Roboto',sans-serif;font-weight:400;font-size:clamp(11px,1.3vw,14px);text-transform:uppercase;flex:1}
+.bi{font-size:18px;font-weight:300;line-height:1;opacity:.6;transition:transform .3s}
+.bar.op .bi{transform:rotate(45deg)}
 
-    /* DOCKED BARS */
-    #bars-dock { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; }
-    .bar { display: flex; align-items: center; height: var(--bar-h); padding: 0 40px; cursor: none; user-select: none; gap: 20px; }
-    .bar-01 { background: var(--olive); color: var(--off-white); border-top: 1px solid rgba(255,255,255,0.1); }
-    .bar-02 { background: var(--yg); color: var(--black); border-top: 1px solid rgba(0,0,0,0.08); }
-    .bar-03 { background: var(--black); color: var(--off-white); border-top: 1px solid rgba(255,255,255,0.08); }
-    /* 04 bar collapsed = off-white */
-    .bar-04 { background: var(--off-white); color: var(--black); border-top: 1px solid rgba(0,0,0,0.1); }
-    .bar-num { font-family: 'Playfair Display', serif; font-style: italic; font-size: 12px; opacity: .6; flex-shrink: 0; width: 24px; }
-    .bar-title { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(11px,1.3vw,14px); letter-spacing: 0; text-transform: uppercase; flex: 1; }
-    .bar-icon { font-size: 18px; font-weight: 300; line-height: 1; opacity: .6; transition: transform 0.3s ease; }
-    .bar.open .bar-icon { transform: rotate(45deg); }
+/* CONTENT PANEL */
+#cp{position:fixed;left:0;right:0;top:0;height:100vh;transform:translateY(100%);transition:transform .55s cubic-bezier(.16,1,.3,1);z-index:150;overflow-y:auto;padding-bottom:var(--bt)}
+#cp.open{transform:translateY(0)}
 
-    /* CONTENT PANEL */
-    #content-panel {
-      position: fixed; left: 0; right: 0; top: 0; height: 100vh;
-      transform: translateY(100%);
-      transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
-      z-index: 150; overflow-y: auto;
-      padding-bottom: var(--bars-total);
-    }
-    #content-panel.open { transform: translateY(0); }
+/* OPTION A SECTIONS */
+.sw{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - var(--bt))}
+.sl{padding:40px 36px 48px;display:flex;flex-direction:column}
+.sl1{background:var(--ol);color:var(--ow)}
+.sl2{background:var(--yg);color:var(--bk)}
+.sl3{background:var(--bk);color:var(--ow)}
+.sl4{background:var(--yg);color:var(--bk)}
+.sr{background:var(--ow);color:var(--bk);padding:40px 44px 48px}
+.stit{font-family:'Roboto',sans-serif;font-weight:400;font-size:clamp(12px,1.4vw,16px);text-transform:uppercase;margin-bottom:22px;line-height:1.2}
+.tl{display:inline-block;font-family:'Playfair Display',serif;font-style:italic;font-size:13px;padding:3px 10px;margin-bottom:18px}
+.tly{background:var(--yg);color:var(--bk)}
+.tlb{background:var(--bk);color:var(--yg)}
+.rr{display:flex;flex-direction:column}
+.rl{font-family:'Roboto',sans-serif;font-weight:700;font-size:12px;text-transform:lowercase;margin-top:13px;margin-bottom:2px;opacity:.7}
+.rv{font-family:'Roboto',sans-serif;font-weight:400;font-size:14px;line-height:1.5}
+.tmm{display:inline-block;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;padding:4px 14px;margin-bottom:22px;border-radius:2px}
+.tmy{background:var(--yg);color:var(--bk)}
+.tmb{background:var(--bk);color:var(--ow)}
+.sb{font-family:'Roboto',sans-serif;font-weight:400;font-size:15px;line-height:1.75}
+.sb p+p{margin-top:1.1em}
+.sb strong{font-weight:700}
+.svl{margin-top:22px;font-family:'Roboto',sans-serif;font-weight:400;font-size:14px;line-height:1.7}
+.svl strong{font-weight:700;display:block;margin-bottom:4px}
+.fr{display:flex;gap:20px;align-items:flex-start;margin-bottom:20px}
+.fi{width:100px;aspect-ratio:3/4;object-fit:cover;flex-shrink:0;border:1px solid rgba(0,0,0,.12)}
+.cr{display:flex;gap:18px;margin-bottom:12px;font-size:14px;align-items:baseline}
+.cl{font-family:'Playfair Display',serif;font-style:italic;opacity:.55;flex-shrink:0;width:88px}
+.cv{font-family:'Roboto',sans-serif;font-weight:400}
+.cv a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.rl2{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,44px);margin-top:40px;letter-spacing:-.01em}
 
-    /* OPTION A: two-col pure type, no photos */
-    .sec-wrap {
-      display: grid; grid-template-columns: 1fr 1fr;
-      min-height: calc(100vh - var(--bars-total));
-    }
-    .sec-left { padding: 40px 36px 48px; display: flex; flex-direction: column; }
-    .sec-left-01 { background: var(--olive); color: var(--off-white); }
-    .sec-left-02 { background: var(--yg); color: var(--black); }
-    .sec-left-03 { background: var(--black); color: var(--off-white); }
-    .sec-left-04 { background: var(--yg); color: var(--black); } /* expanded panel = yg */
-    .sec-right { background: var(--off-white); color: var(--black); padding: 40px 44px 48px; }
-
-    .sec-title { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: clamp(12px,1.4vw,16px); text-transform: uppercase; letter-spacing: 0; line-height: 1.2; margin-bottom: 22px; }
-
-    .tl { display: inline-block; font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; padding: 3px 10px; margin-bottom: 18px; }
-    .tl-yg  { background: var(--yg); color: var(--black); }
-    .tl-blk { background: var(--black); color: var(--yg); }
-    .tl-wh  { background: var(--off-white); color: var(--black); }
-
-    .rr { display: flex; flex-direction: column; }
-    .rr-label { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 12px; text-transform: lowercase; margin-top: 13px; margin-bottom: 2px; opacity: 0.7; }
-    .rr-val   { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: 14px; line-height: 1.5; }
-
-    .tmm { display: inline-block; font-family: 'Playfair Display', serif; font-style: italic; font-size: 14px; padding: 4px 14px; margin-bottom: 22px; border-radius: 2px; }
-    .tmm-yg  { background: var(--yg); color: var(--black); }
-    .tmm-blk { background: var(--black); color: var(--off-white); }
-
-    .sec-body { font-family: 'Roboto', sans-serif; font-weight: 400; font-size: 15px; line-height: 1.75; }
-    .sec-body p + p { margin-top: 1.1em; }
-    .sec-body strong { font-weight: 700; }
-
-    .svc-list { margin-top: 22px; font-family: 'Roboto', sans-serif; font-weight: 400; font-size: 14px; line-height: 1.7; }
-    .svc-list strong { font-weight: 700; display: block; margin-bottom: 4px; }
-
-    .founder-row { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
-    .founder-img { width: 100px; aspect-ratio: 3/4; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.12); }
-
-    .cr { display: flex; gap: 18px; margin-bottom: 12px; font-size: 14px; align-items: baseline; }
-    .cl { font-family: 'Playfair Display', serif; font-style: italic; opacity: .55; flex-shrink: 0; width: 88px; }
-    .cv { font-family: 'Roboto', sans-serif; font-weight: 400; }
-    .cv a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-    .rl2 { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(22px,3vw,44px); margin-top: 40px; letter-spacing: -.01em; }
-
-    @media (max-width: 768px) {
-      .sec-wrap { grid-template-columns: 1fr; }
-      .sec-left, .sec-right { padding: 28px 24px 36px; }
-      .bar { padding: 0 20px; }
-    }
-  </style>
+@media(max-width:768px){
+  .sw{grid-template-columns:1fr}
+  .sl,.sr{padding:28px 24px 36px}
+  .bar{padding:0 20px}
+}
+</style>
 </head>
 <body>
 
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
+<div id="cd"></div>
+<div id="cr"></div>
 
-<div id="scroll-indicator">
-  <div class="si-line"></div>
-  <span class="si-text">scroll</span>
-</div>
-
-<!-- SINGLE WORDMARK: JS animates from center to nav position -->
-<div id="wm-single">
-  <span class="wm-b">fwd slash</span><span class="wm-i">&thinsp;/studio</span>
+<!-- SCROLL INDICATOR: above wordmark on load -->
+<div id="si">
+  <div class="sil"></div>
+  <span class="sit">scroll</span>
 </div>
 
-<div id="wm-large">
-  <span class="wml-b">fwd slash</span><span class="wml-i">&thinsp;/studio</span>
-</div>
-<div id="video-gradient"></div>
-<div id="summary-stamp">
-  <span>we find <em>your</em> story/</span>
-  <span>craft <em>the</em> vision/</span>
-  <span>expand <em>possibility</em></span>
-</div>
+<!-- WORDMARK: centered on load, slides to top-center on scroll -->
+<div id="wm"><span class="wb">fwd slash</span><span class="wi">&thinsp;/studio</span></div>
+
+<!-- LARGE WORDMARK: beat7 bottom left -->
+<div id="wml"><span class="wlb">fwd slash</span><span class="wli">&thinsp;/studio</span></div>
+
+<div id="vg"></div>
+<div id="st"><span>we find <em>your</em> story/</span><span>craft <em>the</em> vision/</span><span>expand <em>possibility</em></span></div>
 
 <!-- SCROLL STAGE -->
-<div id="scroll-stage">
-  <div id="sticky-hero">
+<div id="ss">
+<div id="sh">
 
-    <div id="img-main"><img src="hero-desk.jpg" alt=""/></div>
+  <!-- desk photo -->
+  <div id="ima"><img src="hero-desk.jpg" alt=""/></div>
 
-    <!-- phone frame: shows cropped portion of desk photo (the polaroid area) -->
-    <div id="phone-frame">
-      <img src="hero-desk-crop.png" alt="" id="phone-img"/>
-    </div>
+  <!-- phone frame: uses hero-desk.jpg, object-position shows polaroid area -->
+  <div id="pf"><img src="hero-desk.jpg" alt=""/></div>
 
-    <div class="sq" id="sq1"><img src="hero-hands.jpg" alt=""/></div>
-    <div class="sq" id="sq2"><img src="p2.jpg" alt=""/></div>
-    <div class="sq" id="sq3"><img src="sec-03b.jpg" alt=""/></div>
+  <!-- three squares -->
+  <div class="sq" id="s1"><img src="hero-hands.jpg" alt=""/></div>
+  <div class="sq" id="s2"><img src="p2.jpg" alt=""/></div>
+  <div class="sq" id="s3"><img src="sec-03b.jpg" alt=""/></div>
 
-    <div id="center-expand">
-      <div id="ce-border"></div>
-      <video id="hero-video" autoplay loop muted playsinline src="hero-center.mp4"></video>
-    </div>
+  <!-- video expand -->
+  <div id="ce"><video id="hv" autoplay loop muted playsinline src="hero-center.mp4"></video></div>
 
-    <div id="txt-we-find" class="ht th">we find</div>
-    <div id="txt-your" class="ht">
-      <span class="iw thi">your</span>
-      <span class="rw th">story/</span>
-    </div>
-    <div id="txt-craft"  class="ht th">craft</div>
-    <div id="txt-the"   class="ht thi">the</div>
-    <div id="txt-vision" class="ht th">vision/</div>
-    <div id="txt-expand" class="ht">
-      <span class="ew">expand</span><span class="ei">possibility</span>
-    </div>
+  <!-- text elements -->
+  <div id="twf" class="ht th">we find</div>
+  <div id="tyr" class="ht"><span class="thi" style="display:block">your</span><span class="th" style="display:block">story/</span></div>
+  <div id="tcr" class="ht th">craft</div>
+  <div id="tth" class="ht thi">the</div>
+  <div id="tvi" class="ht th">vision/</div>
+  <div id="te" class="ht"><span class="ew">expand</span><span class="ei">possibility</span></div>
 
-  </div>
+</div>
 </div>
 
 <!-- CONTENT PANEL -->
-<div id="content-panel">
+<div id="cp">
 
-  <div id="pc-s01" class="panel-content" style="display:none">
-    <div class="sec-wrap">
-      <div class="sec-left sec-left-01">
-        <div class="sec-title">01 &nbsp;THE STUDIO / OUR SERVICES</div>
-        <div class="tl tl-yg">tldr</div>
+  <!-- 01 -->
+  <div id="p1" class="pc" style="display:none">
+    <div class="sw">
+      <div class="sl sl1">
+        <div class="stit">01&nbsp;&nbsp;THE STUDIO / OUR SERVICES</div>
+        <div class="tl tly">tldr</div>
         <div class="rr">
-          <span class="rr-label">we make</span><span class="rr-val">really good video / film</span>
-          <span class="rr-label">for</span><span class="rr-val">brands / companies / agencies / cool people</span>
-          <span class="rr-label">crafted for</span><span class="rr-val">social media / campaigns / digital branding / streaming</span>
-          <span class="rr-label">to</span><span class="rr-val">earn attention / connect / own their story</span>
+          <span class="rl">we make</span><span class="rv">really good video / film</span>
+          <span class="rl">for</span><span class="rv">brands / companies / agencies / cool people</span>
+          <span class="rl">crafted for</span><span class="rv">social media / campaigns / digital branding / streaming</span>
+          <span class="rl">to</span><span class="rv">earn attention / connect / own their story</span>
         </div>
       </div>
-      <div class="sec-right">
-        <div class="tmm tmm-yg">tell me more</div>
-        <div class="sec-body">
+      <div class="sr">
+        <div class="tmm tmy">tell me more</div>
+        <div class="sb">
           <p>We are a creative storytelling studio that does one thing exceptionally well: find the story at the center of your work and produce it into cinematic video built for the feed era. We partner with brands, companies, and people building something real to turn meaningful work into visually and emotionally powerful story that resonates and connects.</p>
           <p>We don't operate like a traditional production company. Intentionally. Our innovation lives in merging journalistic curiosity and cinematic craft with responsible AI in production execution. Our story-carving process is our moat, film is our medium, and AI a creative tool we bring in after the vision is set to remove the barriers that have always prevented extraordinary ideas from being told at the creative calibre they deserve.</p>
           <p>Our method exists to make the kind of storytelling that raises hell a hell of a lot more accessible. More on that below.</p>
         </div>
-        <div class="svc-list">
-          <strong>our video/film services include</strong>
-          brand campaigns / product launch / episodic series / short docs / founder stories / intro films / testimonials / highlight reels
-        </div>
+        <div class="svl"><strong>our video/film services include</strong>brand campaigns / product launch / episodic series / short docs / founder stories / intro films / testimonials / highlight reels</div>
       </div>
     </div>
   </div>
 
-  <div id="pc-s02" class="panel-content" style="display:none">
-    <div class="sec-wrap">
-      <div class="sec-left sec-left-02">
-        <div class="sec-title">02 &nbsp;THE FWD METHOD / HOW WE WORK</div>
-        <div class="tl tl-blk">tldr</div>
+  <!-- 02 -->
+  <div id="p2" class="pc" style="display:none">
+    <div class="sw">
+      <div class="sl sl2">
+        <div class="stit">02&nbsp;&nbsp;THE FWD METHOD / HOW WE WORK</div>
+        <div class="tl tlb">tldr</div>
         <div class="rr">
-          <span class="rr-label">we blend</span><span class="rr-val">journalism / film craft / responsible ai</span>
-          <span class="rr-label">to make</span><span class="rr-val">purposeful storytelling / emotionally powerful / more accessible</span>
-          <span class="rr-label">without compromising</span><span class="rr-val">integrity / artistry / quality</span>
-          <span class="rr-label">and produce</span><span class="rr-val">extraordinary stories / without the extraordinary overhead</span>
+          <span class="rl">we blend</span><span class="rv">journalism / film craft / responsible ai</span>
+          <span class="rl">to make</span><span class="rv">purposeful storytelling / emotionally powerful / more accessible</span>
+          <span class="rl">without compromising</span><span class="rv">integrity / artistry / quality</span>
+          <span class="rl">and produce</span><span class="rv">extraordinary stories / without the extraordinary overhead</span>
         </div>
       </div>
-      <div class="sec-right">
-        <div class="tmm tmm-blk">tell me more</div>
-        <div class="sec-body">
+      <div class="sr">
+        <div class="tmm tmb">tell me more</div>
+        <div class="sb">
           <p>This is our creative laboratory, where craft and innovation aren't in tension, they're integrated. Our method blends journalism's curiosity and rigor with film's cinematic vision with future-forward tools.</p>
           <p>A good story takes discipline. It takes taste. It takes knowing how to listen between the pauses, seeing the contradictions, finding what's wordless and making it speakable. That is not something we outsource to a machine; ai comes in after the story is found and the vision is set.</p>
           <p>The innovative production tools we integrate shift and vary based on project and client needs. What never shifts is how we use them and the standard we hold across all our work: intentional, transparent, and always in service of the story.</p>
@@ -368,28 +255,27 @@
     </div>
   </div>
 
-  <div id="pc-s03" class="panel-content" style="display:none">
-    <div class="sec-wrap">
-      <div class="sec-left sec-left-03">
-        <div class="sec-title">03 &nbsp;THE CONVICTION / OUR MISSION</div>
-        <div class="tl tl-yg">tldr</div>
+  <!-- 03 -->
+  <div id="p3" class="pc" style="display:none">
+    <div class="sw">
+      <div class="sl sl3">
+        <div class="stit">03&nbsp;&nbsp;THE CONVICTION / OUR MISSION</div>
+        <div class="tl tly">tldr</div>
         <div class="rr">
-          <span class="rr-label" style="color:rgba(255,255,255,0.65)">founded by</span><span class="rr-val">Melissa Fajardo / journalist / filmmaker / creative leader</span>
-          <span class="rr-label" style="color:rgba(255,255,255,0.65)">a decade across</span><span class="rr-val">Digital journalism / documentary film / brand video direction</span>
-          <span class="rr-label" style="color:rgba(255,255,255,0.65)">including</span><span class="rr-val">Award-winning reporting / oscar-nominated shorts / Streaming originals / brand campaigns</span>
-          <span class="rr-label" style="color:rgba(255,255,255,0.65)">driven by</span><span class="rr-val">One pattern she couldn't unsee / and a vision to fix it</span>
-          <span class="rr-label" style="color:rgba(255,255,255,0.65)">executed with</span><span class="rr-val">Trusted filmmakers / storytellers / creative innovators</span>
+          <span class="rl" style="color:rgba(255,255,255,.65)">founded by</span><span class="rv">Melissa Fajardo / journalist / filmmaker / creative leader</span>
+          <span class="rl" style="color:rgba(255,255,255,.65)">a decade across</span><span class="rv">Digital journalism / documentary film / brand video direction</span>
+          <span class="rl" style="color:rgba(255,255,255,.65)">including</span><span class="rv">Award-winning reporting / oscar-nominated shorts / Streaming originals / brand campaigns</span>
+          <span class="rl" style="color:rgba(255,255,255,.65)">driven by</span><span class="rv">One pattern she couldn't unsee / and a vision to fix it</span>
+          <span class="rl" style="color:rgba(255,255,255,.65)">executed with</span><span class="rv">Trusted filmmakers / storytellers / creative innovators</span>
         </div>
       </div>
-      <div class="sec-right">
-        <div class="tmm tmm-yg">tell me more</div>
-        <div class="founder-row">
-          <img src="melissa.jpg" alt="Melissa Fajardo" class="founder-img"/>
-          <div class="sec-body">
-            <p>This studio wasn't an idea. It was a conclusion after years of watching extraordinary stories get approved in concept and killed at the budget proposal. Great stories require craft, expertise, artistry, and talent in remarkable symbiosis — that's what makes them extraordinary, and what prices most people out of telling them well.</p>
-          </div>
+      <div class="sr">
+        <div class="tmm tmy">tell me more</div>
+        <div class="fr">
+          <img src="melissa.jpg" alt="Melissa Fajardo" class="fi"/>
+          <div class="sb"><p>This studio wasn't an idea. It was a conclusion after years of watching extraordinary stories get approved in concept and killed at the budget proposal. Great stories require craft, expertise, artistry, and talent in remarkable symbiosis — that's what makes them extraordinary, and what prices most people out of telling them well.</p></div>
         </div>
-        <div class="sec-body">
+        <div class="sb">
           <p>Then AI arrived and was supposed to change that. Instead, it flooded our screens with aesthetic noise at unprecedented speed. It didn't democratize storytelling. It democratized content.</p>
           <p><strong>fwd slash/studio</strong> exists in that gap — using innovative tools to bridge access to premium storytelling without sacrificing what makes it worth making.</p>
           <p>The slash in our name isn't decoration. It holds opposites in the same breath: craft and innovation / tradition and technology / access and quality. In every URL it's how you navigate forward. In a fraction it's the ratio between two things. That tension is where the best stories live. It's where we work.</p>
@@ -398,10 +284,11 @@
     </div>
   </div>
 
-  <div id="pc-s04" class="panel-content" style="display:none">
-    <div class="sec-wrap">
-      <div class="sec-left sec-left-04">
-        <div class="sec-title">04 &nbsp;THE FIRST SPARK / GET IN TOUCH</div>
+  <!-- 04 -->
+  <div id="p4" class="pc" style="display:none">
+    <div class="sw">
+      <div class="sl sl4">
+        <div class="stit">04&nbsp;&nbsp;THE FIRST SPARK / GET IN TOUCH</div>
         <div style="margin-top:8px">
           <div class="cr"><span class="cl">email/</span><span class="cv"><a href="mailto:hello@fwdslashstudio.com">hello@fwdslashstudio.com</a></span></div>
           <div class="cr"><span class="cl">location/</span><span class="cv">anywhere with strong wifi / based in dubai / working globally</span></div>
@@ -409,7 +296,7 @@
           <div class="cr"><span class="cl">linkedin/</span><span class="cv"><a href="https://linkedin.com/company/fwdslashstudio" target="_blank">@fwdslashstudio</a></span></div>
         </div>
       </div>
-      <div class="sec-right" style="display:flex;align-items:center;">
+      <div class="sr" style="display:flex;align-items:center">
         <div class="rl2">Ready when you are.</div>
       </div>
     </div>
@@ -418,317 +305,276 @@
 </div>
 
 <!-- DOCKED BARS -->
-<div id="bars-dock">
-  <div class="bar bar-01" id="bar-01" onclick="togglePanel('s01','bar-01')"><span class="bar-num">01</span><span class="bar-title">THE STUDIO / OUR SERVICES</span><span class="bar-icon">+</span></div>
-  <div class="bar bar-02" id="bar-02" onclick="togglePanel('s02','bar-02')"><span class="bar-num">02</span><span class="bar-title">THE FWD METHOD / HOW WE WORK</span><span class="bar-icon">+</span></div>
-  <div class="bar bar-03" id="bar-03" onclick="togglePanel('s03','bar-03')"><span class="bar-num">03</span><span class="bar-title">THE CONVICTION / OUR MISSION</span><span class="bar-icon">+</span></div>
-  <div class="bar bar-04" id="bar-04" onclick="togglePanel('s04','bar-04')"><span class="bar-num">04</span><span class="bar-title">THE FIRST SPARK / GET IN TOUCH</span><span class="bar-icon">+</span></div>
+<div id="bd">
+  <div class="bar b1" id="b1" onclick="tp('1','b1')"><span class="bn">01</span><span class="bt">THE STUDIO / OUR SERVICES</span><span class="bi">+</span></div>
+  <div class="bar b2" id="b2" onclick="tp('2','b2')"><span class="bn">02</span><span class="bt">THE FWD METHOD / HOW WE WORK</span><span class="bi">+</span></div>
+  <div class="bar b3" id="b3" onclick="tp('3','b3')"><span class="bn">03</span><span class="bt">THE CONVICTION / OUR MISSION</span><span class="bi">+</span></div>
+  <div class="bar b4" id="b4" onclick="tp('4','b4')"><span class="bn">04</span><span class="bt">THE FIRST SPARK / GET IN TOUCH</span><span class="bi">+</span></div>
 </div>
 
 <script>
 // CURSOR
-const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
+const CD=document.getElementById('cd'),CR=document.getElementById('cr');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
-(function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar);})();
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;CD.style.left=mx+'px';CD.style.top=my+'px'});
+(function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(ar)})();
 document.querySelectorAll('a,.bar').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+  el.addEventListener('mouseenter',()=>{CD.style.width='6px';CD.style.height='6px';CR.style.width='52px';CR.style.height='52px'});
+  el.addEventListener('mouseleave',()=>{CD.style.width='8px';CD.style.height='8px';CR.style.width='36px';CR.style.height='36px'});
 });
 
-// PANEL TOGGLE
-let activeSection=null;
-function togglePanel(secId,barId){
-  const panel=document.getElementById('content-panel');
-  const bar=document.getElementById(barId);
-  if(activeSection===secId){
+// PANEL
+let as=null;
+function tp(id,bid){
+  const panel=document.getElementById('cp'),bar=document.getElementById(bid);
+  if(as===id){
     panel.classList.remove('open');
-    document.querySelectorAll('.bar').forEach(b=>b.classList.remove('open'));
-    activeSection=null;
-    document.getElementById('wm-large').classList.remove('hidden-wm');
-    
+    document.querySelectorAll('.bar').forEach(b=>b.classList.remove('op'));
+    as=null;
+    document.getElementById('wml').classList.remove('hwm');
+    // restore wm to scroll-driven position
     return;
   }
-  document.querySelectorAll('.panel-content').forEach(p=>p.style.display='none');
-  document.getElementById('pc-'+secId).style.display='block';
+  document.querySelectorAll('.pc').forEach(p=>p.style.display='none');
+  document.getElementById('p'+id).style.display='block';
   panel.classList.add('open');
-  document.querySelectorAll('.bar').forEach(b=>b.classList.remove('open'));
-  bar.classList.add('open');
-  activeSection=secId;
-  panel.scrollTop=0;
-  document.getElementById('wm-large').classList.add('hidden-wm');
-  
-  document.getElementById('scroll-indicator').classList.add('hidden');
+  document.querySelectorAll('.bar').forEach(b=>b.classList.remove('op'));
+  bar.classList.add('op');
+  as=id; panel.scrollTop=0;
+  document.getElementById('wml').classList.add('hwm');
+  document.getElementById('si').classList.add('hid');
+  // move wm to top-left for panel
+  const wm=document.getElementById('wm');
+  wm.style.top='26px'; wm.style.left='28px';
+  wm.style.transform='translate(0,-50%)';
+  wm.style.fontSize='14px';
 }
 
 // HELPERS
-function lerp(a,b,t){return a+(b-a)*Math.max(0,Math.min(1,t));}
-function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
-function ease(t){return t<0.5?2*t*t:-1+(4-2*t)*t;}
+const lerp=(a,b,t)=>a+(b-a)*Math.max(0,Math.min(1,t));
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t;
 
-const wmSingle   = document.getElementById('wm-single');
-const stage      = document.getElementById('scroll-stage');
-const stickyHero = document.getElementById('sticky-hero');
-const imgMain    = document.getElementById('img-main');
-const phoneFrame = document.getElementById('phone-frame');
-const phoneImg   = document.getElementById('phone-img');
-const sq1=document.getElementById('sq1'), sq2=document.getElementById('sq2'), sq3=document.getElementById('sq3');
-const centerExp  = document.getElementById('center-expand');
-const ceBorder   = document.getElementById('ce-border');
-const heroVideo  = document.getElementById('hero-video');
-const videoGrad  = document.getElementById('video-gradient');
-const wmLarge    = document.getElementById('wm-large');
+// ELEMENTS
+const SS=document.getElementById('ss');
+const SH=document.getElementById('sh');
+const IMA=document.getElementById('ima');
+const PF=document.getElementById('pf');
+const S1=document.getElementById('s1'),S2=document.getElementById('s2'),S3=document.getElementById('s3');
+const CE=document.getElementById('ce');
+const HV=document.getElementById('hv');
+const VG=document.getElementById('vg');
+const WM=document.getElementById('wm');
+const WML=document.getElementById('wml');
+const ST=document.getElementById('st');
+const SI=document.getElementById('si');
+const TWF=document.getElementById('twf'),TYR=document.getElementById('tyr');
+const TCR=document.getElementById('tcr'),TTH=document.getElementById('tth'),TVI=document.getElementById('tvi');
+const TE=document.getElementById('te');
 
-const stamp      = document.getElementById('summary-stamp');
-const scrollInd  = document.getElementById('scroll-indicator');
-const txtWeFind  = document.getElementById('txt-we-find');
-const txtYour    = document.getElementById('txt-your');
-const txtCraft   = document.getElementById('txt-craft');
-const txtThe     = document.getElementById('txt-the');
-const txtVision  = document.getElementById('txt-vision');
-const txtExpand  = document.getElementById('txt-expand');
+/*
+BEAT MAP — clean, well-spaced:
+B0 0.00→0.07: white screen, wm centered, scroll above
+B1 0.07→0.16: wm slides to top-center, scroll shrinks to bottom. NOTHING else.
+B2 0.16→0.26: desk photo fades in small+centered, "we find" left
+B3 0.26→0.38: photo grows, "your" right fades in
+B4 0.38→0.46: "story/" appears. phone frame appears over photo. photo fades out.
+B5 0.46→0.54: clean gap — phone frame + "your story/" fade out
+B6 0.54→0.63: sq1 (hands) upper-left + "craft"
+B7 0.63→0.71: sq2 (portrait) center + "the"
+B8 0.71→0.80: sq3 (kitchen) lower-right + "vision/"
+B9 0.80→0.90: sq2 expands to full-bleed video (bg stays WHITE until 95%+)
+B10 0.90→1.00: video desaturates b&w, zoom, gradient, large wm
+*/
+const B=[0,.07,.16,.26,.38,.46,.54,.63,.71,.80,.90,1.0];
+function bt(p,i){return clamp((p-B[i])/(B[i+1]-B[i]),0,1)}
 
-// Beat boundaries (9 beats including gap beats)
-// B[0]→B[1]: beat0  — centered wordmark + scroll only
-// B[1]→B[2]: beat1  — wm slides to top, scroll shrinks to bottom (NOTHING ELSE)
-// B[2]→B[3]: beat2  — desk photo appears small center, "we find" left
-// B[3]→B[4]: beat2b — photo grows, "your story/" right
-// B[4]→B[5]: beat2c — photo fades, phone frame + "your story/" only
-// B[5]→B[6]: gap    — clean empty, phone fades
-// B[6]→B[7]: beat3  — sq1 upper-left, "craft"
-// B[7]→B[8]: beat4  — sq2 center, "the"
-// B[8]→B[9]: beat5  — sq3 lower-right, "vision/"
-// B[9]→B[10]: beat6 — sq2 expands to full bleed
-// B[10]→?: beat7    — zoom + gradient + large wm
-const B=[0, 0.06, 0.14, 0.24, 0.33, 0.41, 0.50, 0.59, 0.68, 0.78, 0.89, 1.0];
-
-let stampShown=false;
-function vw(){return window.innerWidth;}
-function vh(){return window.innerHeight;}
-function bH(){return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h'))*4;}
-function aH(){return vh()-bH();} // usable hero height
-
-function getSq2Bounds(){const r=sq2.getBoundingClientRect();return{left:r.left,top:r.top,width:r.width,height:r.height};}
-
-function t(p,i){return clamp((p-B[i])/(B[i+1]-B[i]),0,1);}
+let stampOn=false;
+const vw=()=>window.innerWidth;
+const vh=()=>window.innerHeight;
+const barsH=()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bh'))*4;
+const heroH=()=>vh()-barsH();
+const getSq2=()=>{const r=S2.getBoundingClientRect();return{l:r.left,t:r.top,w:r.width,h:r.height}};
+const GAP=22;
 
 function onScroll(){
-  const stageTop=stage.getBoundingClientRect().top+window.scrollY;
-  const stageH=stage.offsetHeight-vh();
-  const p=clamp((window.scrollY-stageTop)/stageH,0,1);
-  const W=vw(),H=vh(),AH=aH();
+  if(as!==null) return; // don't run scroll logic when panel open
+
+  const stTop=SS.getBoundingClientRect().top+window.scrollY;
+  const stH=SS.offsetHeight-vh();
+  const p=clamp((window.scrollY-stTop)/stH,0,1);
+  const W=vw(),H=vh(),AH=heroH();
   const cx=W/2, cy=AH/2;
-  const GAP=24;
 
-  const t1=t(p,1);           // wm slides up, scroll shrinks down
-  const t2=t(p,2),t3=t(p,3); // photo appears, grows
-  const t2b=t(p,4),tgap=t(p,5); // photo fades, gap
-  const tb3=t(p,6),tb4=t(p,7),tb5=t(p,8); // craft, the, vision
-  const t6=t(p,9),t7=t(p,10); // expand, zoom
+  const t0=bt(p,0),t1=bt(p,1),t2=bt(p,2),t3=bt(p,3),t4=bt(p,4),t5=bt(p,5);
+  const t6=bt(p,6),t7=bt(p,7),t8=bt(p,8),t9=bt(p,9),t10=bt(p,10);
 
-  // ── SINGLE WORDMARK: slides from true center to top-center ──
-  // Use percentage-based top for beat0 centering, lerp to px for beat1
-  const wmLargeSz = 26;
-  const wmSmallSz = 14;
-  const wmSz = lerp(wmLargeSz, wmSmallSz, ease(t1));
-  // At beat0: top=50vh, transform=translate(-50%,-50%) → truly centered
-  // At beat1: top=33px (26px padding + half of 14px font), transform=translate(-50%,-50%)
-  const wmTargetTopPx = 33;
-  const wmStartTopPx  = vh() * 0.5;
-  const wmTopPx = lerp(wmStartTopPx, wmTargetTopPx, ease(t1));
-  wmSingle.style.fontSize  = wmSz + 'px';
-  wmSingle.style.top       = wmTopPx + 'px';
-  wmSingle.style.left      = '50%';
-  wmSingle.style.transform = 'translate(-50%, -50%)';
-  wmSingle.classList.toggle('wm-white', t6>0.9 && t7<0.3);
-  wmSingle.style.opacity   = t7>0.4 ? '0' : '1';
-  // panel open: shift to left
-  if(activeSection !== null){
-    wmSingle.style.left      = '28px';
-    wmSingle.style.transform = 'translateY(-50%)';
-    wmSingle.style.fontSize  = '14px';
-    wmSingle.style.top       = wmTargetTopPx + 'px';
-    wmSingle.style.opacity   = '1';
+  // ── WORDMARK ──
+  // Beat0: stay centered (CSS default handles this)
+  // Beat1: lerp from center to top
+  const wmSz=lerp(26,14,ease(t1));
+  const wmTopStart=H*.5;
+  const wmTopEnd=33; // 26px padding + half 14px font
+  const wmTop=lerp(wmTopStart,wmTopEnd,ease(t1));
+  WM.style.fontSize=wmSz+'px';
+  WM.style.top=wmTop+'px';
+  WM.style.left='50%';
+  WM.style.transform='translate(-50%,-50%)';
+  WM.classList.toggle('ww', t9>0.9&&t10<0.4);
+  WM.style.opacity=t10>0.5?'0':'1';
+
+  // ── SCROLL INDICATOR ──
+  // Beat0: above wordmark (CSS default: bottom=calc(50%+21px))
+  // Beat1: shrinks and moves to bottom center
+  if(t10>0.4){
+    SI.classList.add('hid');
+  } else {
+    SI.classList.remove('hid');
+    const sil=SI.querySelector('.sil');
+    const sit=SI.querySelector('.sit');
+    const lineH=Math.round(lerp(48,18,ease(t1)));
+    sil.style.height=lineH+'px';
+    sit.style.opacity=String(clamp(1-ease(t1)*2,0,1));
+    // position: lerp from "above wordmark" to "bottom center above bars"
+    // above wordmark: bottom = 50% + wmSz/2 + 8px
+    // bottom center: top = H - barsH - 18 - lineH - 14
+    const bTop=H-barsH()-18-lineH-14;
+    const sTop_end=bTop;
+    const sTop_start=H*.5-wmSz/2-8-lineH; // top of line when above wm
+    const sTop=lerp(sTop_start,sTop_end,ease(t1));
+    SI.style.top=sTop+'px';
+    SI.style.bottom='auto';
+    SI.style.transform='translateX(-50%)';
   }
 
-  // ── MAIN PHOTO — appears beat2 (after wm settled), grows beat3 ──
-  const smallSz=Math.min(AH*0.26,W*0.20);
-  const bigSz  =Math.min(AH*0.50,W*0.38);
-  const sz=lerp(smallSz,bigSz,ease(t3));
-  const aspect=4/3;
-  const iW=sz, iH=sz/aspect;
-  imgMain.style.width =iW+'px';
-  imgMain.style.height=iH+'px';
-  imgMain.style.left=(cx-iW/2)+'px';
-  imgMain.style.top =(cy-iH/2)+'px';
-  // fades in beat2, fades out beat2b
-  const mainOp = clamp(t2*4,0,1)*clamp(1-ease(t2b)*2,0,1);
-  imgMain.style.opacity=String(mainOp);
+  // ── DESK PHOTO ──
+  const smSz=Math.min(AH*.26,W*.20);
+  const bigSz=Math.min(AH*.50,W*.38);
+  const sz=lerp(smSz,bigSz,ease(t3));
+  const iW=sz, iH=sz*(3/4);
+  IMA.style.width=iW+'px'; IMA.style.height=iH+'px';
+  IMA.style.left=(cx-iW/2)+'px'; IMA.style.top=(cy-iH/2)+'px';
+  IMA.style.borderRadius='12px';
+  // fades in beat2, fades out beat4
+  IMA.style.opacity=String(clamp(t2*3,0,1)*clamp(1-ease(t4)*2,0,1));
 
   // ── PHONE FRAME ──
-  const pfW=Math.min(AH*0.08,W*0.055);
-  const pfH=pfW/0.46;
-  const pfLeft=cx-pfW/2;
-  const pfTop =cy-pfH/2;
-  phoneFrame.style.width =pfW+'px';
-  phoneFrame.style.height=pfH+'px';
-  phoneFrame.style.left  =pfLeft+'px';
-  phoneFrame.style.top   =pfTop+'px';
-  // appears late beat3, fades in gap
-  const pfOp = clamp((t3-0.55)*4,0,1)*clamp(1-tgap*3,0,1);
-  phoneFrame.style.opacity=String(pfOp);
+  // Positioned relative to the photo bounding box, over the polaroid area
+  // Polaroid sits at roughly 33% from left, 48% from top of the desk image
+  const pfW=Math.min(iW*.18,W*.06);
+  const pfH=pfW*2.1; // portrait ~1:2.1
+  // photo left edge + 33% of photo width, photo top edge + 48% of photo height
+  const photoLeft=cx-iW/2;
+  const photoTop=cy-iH/2;
+  const pfLeft=photoLeft+iW*.33-pfW/2;
+  const pfTop=photoTop+iH*.42-pfH/2;
+  PF.style.width=pfW+'px'; PF.style.height=pfH+'px';
+  PF.style.left=pfLeft+'px'; PF.style.top=pfTop+'px';
+  // appears late beat3, stays beat4, fades beat5
+  const pfOp=clamp((t3-.6)*4,0,1)*clamp(1-t5*3,0,1);
+  PF.style.opacity=String(pfOp);
 
   // ── THREE SQUARES ──
-  const sq2sz=Math.min(AH*0.28,W*0.17);
-  const sq1sz=sq2sz*0.76;
-  const sq3sz=sq2sz*0.76;
-  const sq2x=cx-sq2sz/2, sq2y=cy-sq2sz/2-10;
-  const sq1x=sq2x-sq1sz-GAP*2, sq1y=sq2y-sq1sz*0.3;
-  const sq3x=sq2x+sq2sz+GAP*2, sq3y=sq2y+sq2sz-sq3sz*0.55;
-  sq1.style.width=sq1sz+'px'; sq1.style.height=sq1sz+'px';
-  sq1.style.left=sq1x+'px';   sq1.style.top=sq1y+'px';
-  sq2.style.width=sq2sz+'px'; sq2.style.height=sq2sz+'px';
-  sq2.style.left=sq2x+'px';   sq2.style.top=sq2y+'px';
-  sq3.style.width=sq3sz+'px'; sq3.style.height=sq3sz+'px';
-  sq3.style.left=sq3x+'px';   sq3.style.top=sq3y+'px';
-
-  const sqFade=clamp(1-t6*3,0,1);
-  sq1.style.opacity=String(clamp((tb3-0.05)*5,0,1)*sqFade);
-  sq2.style.opacity=String(clamp((tb4-0.05)*5,0,1)*sqFade);
-  sq3.style.opacity=String(clamp((tb5-0.05)*5,0,1)*sqFade);
+  const s2sz=Math.min(AH*.27,W*.17);
+  const s1sz=s2sz*.76, s3sz=s2sz*.76;
+  const s2x=cx-s2sz/2, s2y=cy-s2sz/2-10;
+  const s1x=s2x-s1sz-GAP*2, s1y=s2y-s1sz*.3;
+  const s3x=s2x+s2sz+GAP*2, s3y=s2y+s2sz-s3sz*.55;
+  S1.style.cssText+=`;width:${s1sz}px;height:${s1sz}px;left:${s1x}px;top:${s1y}px`;
+  S2.style.cssText+=`;width:${s2sz}px;height:${s2sz}px;left:${s2x}px;top:${s2y}px`;
+  S3.style.cssText+=`;width:${s3sz}px;height:${s3sz}px;left:${s3x}px;top:${s3y}px`;
+  const sqFade=clamp(1-t9*3,0,1);
+  S1.style.opacity=String(clamp((t6-.05)*5,0,1)*sqFade);
+  S2.style.opacity=String(clamp((t7-.05)*5,0,1)*sqFade);
+  S3.style.opacity=String(clamp((t8-.05)*5,0,1)*sqFade);
 
   // ── CENTER EXPAND from sq2 ──
-  if(t6>0){
-    const cpb=getSq2Bounds();
-    if(cpb && cpb.width>0){
-      const et=ease(t6);
-      centerExp.style.opacity='1'; centerExp.style.pointerEvents='auto';
-      centerExp.style.left  =lerp(cpb.left,  0,et)+'px';
-      centerExp.style.top   =lerp(cpb.top,   0,et)+'px';
-      centerExp.style.width =lerp(cpb.width, W,et)+'px';
-      centerExp.style.height=lerp(cpb.height,H,et)+'px';
-      centerExp.style.borderRadius=lerp(10,0,et)+'px';
-      ceBorder.style.borderWidth=lerp(2,0,et)+'px';
-      ceBorder.style.opacity=String(clamp(1-et*3,0,1));
-      stickyHero.style.background=et>0.85?'var(--black)':'var(--off-white)';
-      videoGrad.style.opacity='0';
+  if(t9>0){
+    const cpb=getSq2();
+    if(cpb.w>0){
+      const et=ease(t9);
+      CE.style.opacity='1'; CE.style.pointerEvents='auto';
+      CE.style.left=lerp(cpb.l,0,et)+'px';
+      CE.style.top=lerp(cpb.t,0,et)+'px';
+      CE.style.width=lerp(cpb.w,W,et)+'px';
+      CE.style.height=lerp(cpb.h,H,et)+'px';
+      CE.style.borderRadius=lerp(10,0,et)+'px';
+      // bg: stay WHITE until 95%+ full bleed
+      SH.style.background=et>.95?'var(--bk)':'var(--ow)';
+      VG.style.opacity='0';
     }
   } else {
-    centerExp.style.opacity='0'; centerExp.style.pointerEvents='none';
-    stickyHero.style.background='var(--off-white)';
-    videoGrad.style.opacity='0';
+    CE.style.opacity='0'; CE.style.pointerEvents='none';
+    SH.style.background='var(--ow)';
+    VG.style.opacity='0';
   }
 
-  // ── BEAT 7: zoom + gradient + large wm ──
-  if(t7>0){
-    heroVideo.style.transform=`scale(${lerp(1,1.22,ease(t7))})`;
-    heroVideo.style.transformOrigin='center 32%';
-    videoGrad.style.opacity=String(clamp(t7*1.8,0,1));
+  // ── BEAT 10: desaturate, zoom, gradient, large wm ──
+  if(t10>0){
+    // desaturate video smoothly
+    HV.classList.toggle('bw', t10>0.3);
+    HV.style.transform=`scale(${lerp(1,1.22,ease(t10))})`;
+    VG.style.opacity=String(clamp(t10*1.8,0,1));
   } else {
-    heroVideo.style.transform='scale(1)';
+    HV.classList.remove('bw');
+    HV.style.transform='scale(1)';
   }
 
-  document.body.classList.toggle('nav-white', t6>0.9&&t7<0.3);
-  document.body.classList.toggle('vid-cur', t6>0.5);
+  document.body.classList.toggle('vc', t9>0.5);
+  if(!WML.classList.contains('hwm'))
+    WML.style.opacity=String(clamp((t10-.1)*2,0,1));
+  if(t10>.7&&!stampOn){stampOn=true;ST.classList.add('vis')}
+  else if(t10<.7&&stampOn){stampOn=false;ST.classList.remove('vis')}
 
-  if(!wmLarge.classList.contains('hidden-wm')){
-    wmLarge.style.opacity=String(clamp((t7-0.1)*2,0,1));
-  }
-  if(t7>0.7&&!stampShown){stampShown=true;stamp.classList.add('visible');}
-  else if(t7<0.7&&stampShown){stampShown=false;stamp.classList.remove('visible');}
+  // ── TEXT ──
+  // "we find" — beat2, fades beat4
+  const wfOp=clamp(t2*4,0,1)*clamp(1-ease(t4)*2,0,1);
+  TWF.style.opacity=String(wfOp);
+  TWF.style.left='0'; TWF.style.width=(cx-iW/2-GAP)+'px';
+  TWF.style.top=cy+'px'; TWF.style.transform='translateY(-50%)';
+  TWF.style.textAlign='right';
 
-  // ── SCROLL INDICATOR: large centered beat0, shrinks to bottom-center beat1+ ──
-  const siEl   = scrollInd;
-  const siLine = scrollInd.querySelector('.si-line');
-  const siText = scrollInd.querySelector('.si-text');
+  // "your story/" — "your" beat3, "story/" beat4, both fade beat5
+  const yrOp=clamp((t3-.3)*4,0,1)*clamp(1-t5*3,0,1);
+  TYR.style.opacity=String(yrOp);
+  TYR.style.left=(cx+iW/2+GAP)+'px'; TYR.style.right='0';
+  TYR.style.top=cy+'px'; TYR.style.transform='translateY(-52%)';
+  TYR.style.textAlign='left';
 
-  if(t7>0.3){
-    siEl.classList.add('hidden');
-  } else {
-    siEl.classList.remove('hidden');
-    // beat0: line 48px tall, top centered (above the "scroll" text), text visible
-    // beat1+: line 20px, bottom-center just above bars, text fades
-    const lineH   = Math.round(lerp(48, 20, ease(t1)));
-    const textOp  = clamp(1 - ease(t1)*2, 0, 1);
-    // vertical position: start at center of screen minus some offset, end at bars+gap
-    const barsTop = H - bH();
-    const bottomPos = barsTop - 18 - lineH - 16; // 18px gap above bars, 16px for text
-    const centerPos = AH/2 - lineH/2 - 20; // center of usable hero area
-    const topPos  = lerp(centerPos, bottomPos, ease(t1));
+  // craft / the / vision — beats 6/7/8, fade beat9
+  TCR.style.opacity=String(clamp((t6-.05)*5,0,1)*sqFade);
+  TCR.style.left='0'; TCR.style.width=(s1x-GAP)+'px';
+  TCR.style.top=(s1y+s1sz/2)+'px'; TCR.style.transform='translateY(-50%)';
+  TCR.style.textAlign='right';
 
-    siEl.style.top    = topPos + 'px';
-    siEl.style.bottom = 'auto';
-    siLine.style.height = lineH + 'px';
-    siText.style.opacity = String(textOp);
-    siText.style.fontSize = lerp(11, 9, ease(t1)) + 'px';
-  }
+  TTH.style.opacity=String(clamp((t7-.05)*5,0,1)*sqFade);
+  TTH.style.left=(s2x+s2sz+GAP)+'px'; TTH.style.right='0';
+  TTH.style.top=(s2y+s2sz*.15)+'px'; TTH.style.transform='none';
+  TTH.style.textAlign='left';
 
-  // ── TEXT OPACITIES ──
+  TVI.style.opacity=String(clamp((t8-.05)*5,0,1)*sqFade);
+  TVI.style.left=(s3x+s3sz+GAP)+'px'; TVI.style.right='0';
+  TVI.style.top=(s3y+s3sz*.3)+'px'; TVI.style.transform='none';
+  TVI.style.textAlign='left';
 
-  // "we find" — beat1+2, fades out WITH photo in beat2b
-  const weOp=clamp(t2*4,0,1)*clamp(1-ease(t2b)*2,0,1);
-  txtWeFind.style.opacity=String(weOp);
-  txtWeFind.style.left='0px';
-  txtWeFind.style.width=(cx-iW/2-GAP)+'px';
-  txtWeFind.style.textAlign='right';
-  txtWeFind.style.top=(cy)+'px';
-  txtWeFind.style.transform='translateY(-50%)';
-
-  // "your story/" — beat2 after photo grows, stays through beat2b, fades in gap
-  const yourOp=clamp((t3-0.35)*4,0,1)*clamp(1-tgap*3,0,1);
-  txtYour.style.opacity=String(yourOp);
-  txtYour.style.left=(cx+iW/2+GAP)+'px';
-  txtYour.style.right='0px';
-  txtYour.style.top=(cy)+'px';
-  txtYour.style.transform='translateY(-55%)';
-  txtYour.style.textAlign='left';
-
-  // "craft" — beat3, fades beat6
-  txtCraft.style.opacity=String(clamp((tb3-0.05)*5,0,1)*sqFade);
-  txtCraft.style.left='0px';
-  txtCraft.style.width=(sq1x-GAP)+'px';
-  txtCraft.style.textAlign='right';
-  txtCraft.style.top=(sq1y+sq1sz/2)+'px';
-  txtCraft.style.transform='translateY(-50%)';
-
-  // "the" — beat4, right of sq2, upper position
-  txtThe.style.opacity=String(clamp((tb4-0.05)*5,0,1)*sqFade);
-  const sq2RightEdge=sq2x+sq2sz+GAP;
-  txtThe.style.left=sq2RightEdge+'px';
-  txtThe.style.right='0px';
-  txtThe.style.top=(sq2y+sq2sz*0.15)+'px';
-  txtThe.style.transform='none';
-  txtThe.style.textAlign='left';
-
-  // "vision/" — beat5, right of sq3
-  const sq3RightEdge=sq3x+sq3sz+GAP;
-  txtVision.style.opacity=String(clamp((tb5-0.05)*5,0,1)*sqFade);
-  txtVision.style.left=sq3RightEdge+'px';
-  txtVision.style.right='0px';
-  txtVision.style.top=(sq3y+sq3sz*0.3)+'px';
-  txtVision.style.transform='none';
-  txtVision.style.textAlign='left';
-
-  // "expand possibility" — centered in usable hero, after full bleed
-  txtExpand.style.opacity=String(clamp((t6-0.88)*8,0,1)*clamp(1-t7*2.5,0,1));
-  txtExpand.style.top=(cy)+'px';
-  txtExpand.style.transform=`translateY(calc(-50% + ${ease(t7)*-40}px))`;
+  // "expand possibility" — after full bleed (t9>0.9), fades beat10
+  TE.style.opacity=String(clamp((t9-.88)*8,0,1)*clamp(1-t10*2.5,0,1));
+  TE.style.top=(cy)+'px'; TE.style.transform=`translateY(calc(-50% + ${ease(t10)*-40}px))`;
 }
 
-// INIT — CSS already renders beat0 correctly, just position the photo
-(function init(){
-  const W=vw(),H=vh(),AH=aH();
-  const sz=Math.min(AH*0.26,W*0.20);
-  const iH=sz/(4/3);
-  imgMain.style.width=sz+'px'; imgMain.style.height=iH+'px';
-  imgMain.style.left=(W/2-sz/2)+'px'; imgMain.style.top=(AH/2-iH/2)+'px';
-  imgMain.style.opacity='0';
+// INIT — just set photo position, CSS handles everything else
+(function(){
+  const W=vw(),AH=heroH();
+  const sz=Math.min(AH*.26,W*.20);
+  const iH=sz*(3/4);
+  IMA.style.width=sz+'px'; IMA.style.height=iH+'px';
+  IMA.style.left=(W/2-sz/2)+'px'; IMA.style.top=(AH/2-iH/2)+'px';
 })();
 
 window.addEventListener('scroll',onScroll,{passive:true});
 window.addEventListener('resize',onScroll,{passive:true});
-document.querySelectorAll('img').forEach(i=>{i.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)';this.style.minHeight='40px';this.removeAttribute('src');});});
-document.querySelectorAll('video').forEach(v=>{v.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)';});});
+document.querySelectorAll('img').forEach(i=>i.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)';this.removeAttribute('src')}));
+document.querySelectorAll('video').forEach(v=>v.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)'}));
 </script>
 </body>
 </html>

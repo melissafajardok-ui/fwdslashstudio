@@ -32,7 +32,7 @@ body.vc #cur{color:white}
 #wm{
   position:fixed;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  font-size:26px;z-index:300;
+  font-size:26px;z-index:140;
   pointer-events:none;line-height:1;white-space:nowrap;
   transition:color .4s;
 }
@@ -60,7 +60,7 @@ body.vc .sil::after{background:var(--yg)}
 body.vc .sit{color:rgba(255,255,255,.4)}
 
 /* ── LARGE WORDMARK — beat10 bottom left ── */
-#wml{position:fixed;bottom:calc(var(--bt)+28px);left:4vw;z-index:103;opacity:0;pointer-events:none;line-height:1}
+#wml{position:fixed;bottom:calc(var(--bt)+28px);left:4vw;z-index:18;opacity:0;pointer-events:none;line-height:1}
 #wml.hwm{opacity:0!important}
 .wlb{font-family:'Roboto',sans-serif;font-weight:900;letter-spacing:-.04em;font-size:clamp(56px,7.5vw,120px);color:white}
 .wli{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(56px,7.5vw,120px);color:white}
@@ -138,13 +138,13 @@ body.vc .sit{color:rgba(255,255,255,.4)}
 .sl4{background:var(--yg);color:var(--bk)}
 .sr{background:var(--ow);color:var(--bk);padding:40px 44px 48px}
 .stit{font-family:'Roboto',sans-serif;font-weight:400;font-size:clamp(12px,1.4vw,16px);text-transform:uppercase;margin-bottom:22px;line-height:1.2}
-.tl{display:inline-block;font-family:'Playfair Display',serif;font-style:italic;font-size:13px;padding:3px 10px;margin-bottom:18px}
+.tl{display:inline-block;font-family:'Playfair Display',serif;font-style:italic;font-size:13px;padding:4px 14px;margin-bottom:18px}
 .tly{background:var(--yg);color:var(--bk)}
 .tlb{background:var(--bk);color:var(--yg)}
 .rr{display:flex;flex-direction:column}
-.rl{font-family:'Roboto',sans-serif;font-weight:700;font-size:12px;text-transform:lowercase;margin-top:13px;margin-bottom:2px;opacity:.7}
+.rl{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:15px;text-transform:lowercase;margin-top:16px;margin-bottom:3px;opacity:1}
 .rv{font-family:'Roboto',sans-serif;font-weight:400;font-size:14px;line-height:1.5}
-.tmm{display:inline-block;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;padding:4px 14px;margin-bottom:22px;border-radius:2px}
+.tmm{display:inline-block;font-family:'Playfair Display',serif;font-style:italic;font-size:13px;padding:4px 14px;margin-bottom:22px;border-radius:2px}
 .tmy{background:var(--yg);color:var(--bk)}
 .tmb{background:var(--bk);color:var(--ow)}
 .sb{font-family:'Roboto',sans-serif;font-weight:400;font-size:15px;line-height:1.75}
@@ -575,10 +575,7 @@ function tp(id,bid){
   WML.classList.add('hwm');
   SI.classList.add('hid');
   // wm to top-left
-  WM.style.top='26px';WM.style.left='28px';
-  WM.style.transform='translate(0,-50%)';
-  WM.style.fontSize='14px';
-  WM.classList.remove('ww');
+  
 }
 
 // ── INIT ──

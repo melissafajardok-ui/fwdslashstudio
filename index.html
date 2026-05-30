@@ -60,10 +60,10 @@ body.vc .sil::after{background:var(--yg)}
 body.vc .sit{color:rgba(255,255,255,.4)}
 
 /* ── LARGE WORDMARK — beat10 bottom left ── */
-#wml{position:fixed;bottom:calc(var(--bt)+20px);left:4vw;z-index:103;opacity:0;pointer-events:none;line-height:1}
+#wml{position:fixed;bottom:calc(var(--bt)+28px);left:4vw;z-index:103;opacity:0;pointer-events:none;line-height:1}
 #wml.hwm{opacity:0!important}
-.wlb{font-family:'Roboto',sans-serif;font-weight:900;letter-spacing:-.04em;font-size:clamp(48px,6.5vw,100px);color:white}
-.wli{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(48px,6.5vw,100px);color:white}
+.wlb{font-family:'Roboto',sans-serif;font-weight:900;letter-spacing:-.04em;font-size:clamp(56px,7.5vw,120px);color:white}
+.wli{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(56px,7.5vw,120px);color:white}
 
 /* ── VIDEO GRADIENT ── */
 #vg{position:fixed;bottom:0;left:0;right:0;height:70%;z-index:17;
@@ -71,7 +71,7 @@ body.vc .sit{color:rgba(255,255,255,.4)}
   opacity:0;pointer-events:none}
 
 /* ── STAMP ── */
-#st{position:fixed;bottom:calc(var(--bt)+24px);right:4vw;z-index:103;opacity:0;transition:opacity .8s ease .3s;text-align:right;line-height:1.7;pointer-events:none}
+#st{position:fixed;bottom:calc(var(--bt)+32px);right:4vw;z-index:103;opacity:0;transition:opacity .8s ease .3s;text-align:right;line-height:1.7;pointer-events:none}
 #st.vis{opacity:1}
 #st span{display:block;font-family:'Roboto',sans-serif;font-weight:400;font-size:clamp(10px,.9vw,12px);color:rgba(255,255,255,.45)}
 #st span em{font-family:'Playfair Display',serif;font-style:italic}
@@ -401,7 +401,7 @@ function onScroll(){
   const sit=SI.querySelector('.sit');
   // above wm → bottom center
   const lineH=Math.round(lerp(48,18,ease(t1)));
-  const sTop_above=H*.5 - wmSz/2 - 8 - lineH - 16; // 8px gap above wm, 16 for text
+  const sTop_above=H*.5 - wmSz/2 - 60 - lineH - 16; // 8px gap above wm, 16 for text
   const sTop_below=H - bH() - 18 - lineH - 16;
   const sTop=lerp(sTop_above,sTop_below,ease(t1));
   SI.style.top=sTop+'px';
@@ -443,10 +443,10 @@ function onScroll(){
   if(t4>0){
     const et=ease(t4);
     // contract toward the polaroid area
-    const iTop=lerp(0,36,et);    // % from top
-    const iRight=lerp(0,38,et);  // % from right
+    const iTop=lerp(0,8,et);    // % from top
+    const iRight=lerp(0,52,et);  // % from right
     const iBot=lerp(0,8,et);     // % from bottom
-    const iLeft=lerp(0,22,et);   // % from left
+    const iLeft=lerp(0,18,et);  // % from left
     const iRad=lerp(12,16,et);   // border radius px
     PW.style.clipPath=`inset(${iTop}% ${iRight}% ${iBot}% ${iLeft}% round ${iRad}px)`;
   } else {
@@ -591,14 +591,13 @@ function tp(id,bid){
   PW.style.opacity='0';PW.style.borderRadius='12px';
   // scroll indicator: position above wordmark
   const lineH=48,textH=16,wmHalf=13;
-  const siTop=H*.5-wmHalf-28-lineH-textH;
+  const siTop=H*.5-wmHalf-60-lineH-textH;
   SI.style.top=siTop+'px';
   SI.style.bottom='auto';
 })();
 
 window.addEventListener('scroll',onScroll,{passive:true});
-window.addEventListener('resize',()=>{(function init(){const W=vw(),H=vh(),AH=aH();const smSz=Math.min(AH*.24,W*.18);const smH=smSz*(3/4);PW.style.width=smSz+'px';PW.style.height=smH+'px';PW.style.left=(W/2-smSz/2)+'px';PW.style.top=(AH/2-smH/2)+'px';const siTop=H*.5-13-8-48-16;SI.style.top=siTop+'px'})();onScroll()},{passive:true});
-window.addEventListener('resize',()=>{(function init(){const W=vw(),H=vh(),AH=aH();const smSz=Math.min(AH*.24,W*.18);const smH=smSz*(3/4);PW.style.width=smSz+'px';PW.style.height=smH+'px';PW.style.left=(W/2-smSz/2)+'px';PW.style.top=(AH/2-smH/2)+'px';SI.style.top=siTop+'px'})();onScroll()},{passive:true});
+window.addEventListener('resize',()=>{(function init(){const W=vw(),H=vh(),AH=aH();const smSz=Math.min(AH*.24,W*.18);const smH=smSz*(3/4);PW.style.width=smSz+'px';PW.style.height=smH+'px';PW.style.left=(W/2-smSz/2)+'px';PW.style.top=(AH/2-smH/2)+'px';const siTop=H*.5-13-52-48-16;SI.style.top=siTop+'px'})();onScroll()},{passive:true});
 document.querySelectorAll('img').forEach(i=>i.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)';this.removeAttribute('src')}));
 document.querySelectorAll('video').forEach(v=>v.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)'}));
 </script>

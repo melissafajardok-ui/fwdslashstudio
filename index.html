@@ -26,6 +26,7 @@ body{background:var(--ow);color:var(--bk);font-family:'Roboto',sans-serif;overfl
   transition:color .3s, opacity .2s;
   user-select:none;
 }
+@media(max-width:768px){#cur{display:none}body{cursor:auto}}
 body.vc #cur{color:white}
 
 /* ── WORDMARK — CSS default = beat0 centered ── */
@@ -43,13 +44,9 @@ body.vc #cur{color:white}
 /* ── SCROLL INDICATOR — CSS default = above wordmark ── */
 #si{
   position:fixed;
-  /* bottom of line sits 8px above top of wordmark center
-     wordmark center = 50vh, half-font ~13px, so line-bottom = 50vh-13px-8px
-     line top = that minus line height */
   left:50%;transform:translateX(-50%);
   z-index:202;display:flex;flex-direction:column;
   align-items:center;gap:5px;pointer-events:none;
-  /* initial top set by JS on load */
 }
 #si.hid{opacity:0!important}
 .sil{width:1px;height:48px;background:rgba(0,0,0,.18);position:relative;overflow:hidden}
@@ -60,7 +57,7 @@ body.vc .sil::after{background:var(--yg)}
 body.vc .sit{color:rgba(255,255,255,.4)}
 
 /* ── LARGE WORDMARK — beat10 bottom left ── */
-#wml{position:fixed;bottom:calc(var(--bt)+28px);left:4vw;z-index:18;opacity:0;pointer-events:none;line-height:1}
+#wml{position:fixed;bottom:calc(var(--bt)+32px);left:4vw;z-index:18;opacity:0;pointer-events:none;line-height:1}
 #wml.hwm{opacity:0!important}
 .wlb{font-family:'Roboto',sans-serif;font-weight:900;letter-spacing:-.04em;font-size:clamp(56px,7.5vw,120px);color:white}
 .wli{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(56px,7.5vw,120px);color:white}
@@ -80,16 +77,9 @@ body.vc .sit{color:rgba(255,255,255,.4)}
 #ss{height:1000vh;position:relative}
 #sh{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--ow)}
 
-/* ── DESK PHOTO — clipping mask approach ── */
-#photo-wrap{
-  position:absolute;z-index:10;
-  overflow:hidden;
-  /* clip-path controlled by JS to contract into phone shape */
-}
-#photo-wrap img{
-  /* image stays full size at all times — only clip changes */
-  width:100%;height:100%;object-fit:cover;display:block;
-}
+/* ── DESK PHOTO ── */
+#photo-wrap{position:absolute;z-index:10;overflow:hidden}
+#photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* ── THREE SQUARES ── */
 .sq{position:absolute;z-index:11;overflow:hidden;border-radius:10px;opacity:0}
@@ -159,7 +149,24 @@ body.vc .sit{color:rgba(255,255,255,.4)}
 .cv{font-family:'Roboto',sans-serif;font-weight:400}
 .cv a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .rl2{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,44px);margin-top:40px;letter-spacing:-.01em}
-@media(max-width:768px){.sw{grid-template-columns:1fr}.sl,.sr{padding:28px 24px 36px}.bar{padding:0 20px}}
+
+/* ── DESKTOP + BASE ── */
+@media(max-width:768px){
+  .sw{grid-template-columns:1fr}
+  .sl,.sr{padding:28px 24px 36px}
+  .bar{padding:0 20px}
+  .bt2{font-size:11px}
+  .stit{font-size:11px;margin-bottom:14px}
+  /* hero text: 40px, regular weight */
+  .th{font-size:40px!important;font-weight:400!important;letter-spacing:-.03em}
+  .thi{font-size:40px!important;font-weight:400!important;letter-spacing:-.02em}
+  #te .ew,#te .ei{font-size:7vw!important}
+  .wlb,.wli{font-size:clamp(32px,9vw,52px)}
+  #wml{bottom:calc(var(--bt)+12px)!important;left:2vw!important;right:2vw!important;text-align:left}
+  /* stamp: bottom right above bars */
+  #st{bottom:calc(var(--bt) + 10px)!important;right:14px!important;top:auto!important}
+  #st span{font-size:3vw}
+}
 </style>
 </head>
 <body>
@@ -189,23 +196,16 @@ body.vc .sit{color:rgba(255,255,255,.4)}
 <!-- SCROLL STAGE -->
 <div id="ss"><div id="sh">
 
-  <!-- desk photo with clipping mask -->
   <div id="photo-wrap"><img src="hero-desk.jpg" alt="" id="desk-img"/></div>
 
-  <!-- squares -->
   <div class="sq" id="s1"><img src="hero-hands.jpg" alt=""/></div>
   <div class="sq" id="s2"><img src="p2.jpg" alt=""/></div>
   <div class="sq" id="s3"><img src="sec-03b.jpg" alt=""/></div>
 
-  <!-- video expand -->
   <div id="ce"><video id="hv" autoplay loop muted playsinline src="hero-center.mp4"></video></div>
 
-  <!-- text -->
   <div id="twf" class="ht th">we find</div>
-  <div id="tyr" class="ht">
-    <span class="yi thi">your</span>
-    <span class="yr th">story/</span>
-  </div>
+  <div id="tyr" class="ht"><span class="yi thi">your</span><span class="yr th">story/</span></div>
   <div id="tcr" class="ht th">craft</div>
   <div id="tth" class="ht thi">the</div>
   <div id="tvi" class="ht th">vision/</div>
@@ -279,14 +279,20 @@ body.vc .sit{color:rgba(255,255,255,.4)}
       </div>
       <div class="sr">
         <div class="tmm tmy">tell me more</div>
-        <div class="fr">
-          <img src="melissa.jpg" alt="Melissa Fajardo" class="fi"/>
-          <div class="sb"><p>This studio wasn't an idea. It was a conclusion after years of watching extraordinary stories get approved in concept and killed at the budget proposal. Great stories require craft, expertise, artistry, and talent in remarkable symbiosis — that's what makes them extraordinary, and what prices most people out of telling them well.</p></div>
-        </div>
         <div class="sb">
+          <p>This studio wasn't an idea. It was a conclusion after years of watching extraordinary stories get approved in concept and killed at the budget proposal. Great stories require craft, expertise, artistry, and talent in remarkable symbiosis — that's what makes them extraordinary, and what prices most people out of telling them well.</p>
           <p>Then AI arrived and was supposed to change that. Instead, it flooded our screens with aesthetic noise at unprecedented speed. It didn't democratize storytelling. It democratized content.</p>
           <p><strong>fwd slash/studio</strong> exists in that gap — using innovative tools to bridge access to premium storytelling without sacrificing what makes it worth making.</p>
           <p>The slash in our name isn't decoration. It holds opposites in the same breath: craft and innovation / tradition and technology / access and quality. In every URL it's how you navigate forward. In a fraction it's the ratio between two things. That tension is where the best stories live. It's where we work.</p>
+        </div>
+        <div style="margin-top:28px">
+          <div class="sb">
+            <p>If you've made it all the way here, thank you. I'm genuinely impressed by your attention span.</p>
+          </div>
+          <img src="melissa.jpg" alt="Melissa Fajardo" style="width:100px;height:100px;object-fit:cover;object-position:center top;display:block;border:1px solid rgba(0,0,0,.12);margin-top:16px;margin-bottom:16px"/>
+          <div class="sb">
+            <p>Stay curious,<br/><span style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px">Melissa Fajardo / founder</span></p>
+          </div>
         </div>
       </div>
     </div>
@@ -299,8 +305,8 @@ body.vc .sit{color:rgba(255,255,255,.4)}
         <div style="margin-top:8px">
           <div class="cr2"><span class="cl">email/</span><span class="cv"><a href="mailto:hello@fwdslashstudio.com">hello@fwdslashstudio.com</a></span></div>
           <div class="cr2"><span class="cl">location/</span><span class="cv">anywhere with strong wifi / based in dubai / working globally</span></div>
-          <div class="cr2"><span class="cl">instagram/</span><span class="cv"><a href="https://instagram.com/fwdslashstudio" target="_blank">@fwdslashstudio</a></span></div>
-          <div class="cr2"><span class="cl">linkedin/</span><span class="cv"><a href="https://linkedin.com/company/fwdslashstudio" target="_blank">@fwdslashstudio</a></span></div>
+          <div class="cr2"><span class="cl">instagram/</span><span class="cv"><a href="https://instagram.com/fwd.slash.studio" target="_blank">@fwd.slash.studio</a></span></div>
+          <div class="cr2"><span class="cl">linkedin/</span><span class="cv"><a href="https://linkedin.com/company/fwdslashstudio" target="_blank">fwd.slash.studio</a></span></div>
         </div>
       </div>
       <div class="sr" style="display:flex;align-items:center">
@@ -320,12 +326,9 @@ body.vc .sit{color:rgba(255,255,255,.4)}
 </div>
 
 <script>
-// ── CURSOR: slash ──
+// ── CURSOR ──
 const CUR=document.getElementById('cur');
-document.addEventListener('mousemove',e=>{
-  CUR.style.left=e.clientX+'px';
-  CUR.style.top=e.clientY+'px';
-});
+document.addEventListener('mousemove',e=>{CUR.style.left=e.clientX+'px';CUR.style.top=e.clientY+'px'});
 
 // ── HELPERS ──
 const lerp=(a,b,t)=>a+(b-a)*Math.max(0,Math.min(1,t));
@@ -336,12 +339,12 @@ const vh=()=>window.innerHeight;
 const bH=()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bh'))*4;
 const aH=()=>vh()-bH();
 const GAP=22;
+const mob=()=>window.innerWidth<768; // mobile helper
 
 // ── ELEMENTS ──
 const SS=document.getElementById('ss');
 const SH=document.getElementById('sh');
-const PW=document.getElementById('photo-wrap'); // photo wrap with clip
-const DI=document.getElementById('desk-img');
+const PW=document.getElementById('photo-wrap');
 const S1=document.getElementById('s1'),S2=document.getElementById('s2'),S3=document.getElementById('s3');
 const CE=document.getElementById('ce'),HV=document.getElementById('hv');
 const VG=document.getElementById('vg');
@@ -351,21 +354,6 @@ const TWF=document.getElementById('twf'),TYR=document.getElementById('tyr');
 const TCR=document.getElementById('tcr'),TTH=document.getElementById('tth'),TVI=document.getElementById('tvi');
 const TE=document.getElementById('te');
 
-/*
-BEAT MAP — 12 beats:
-B0  0.00→0.07  white, wm centered, scroll above
-B1  0.07→0.15  wm slides top, scroll to bottom, photo appears small solo
-B2  0.15→0.26  photo expands to medium; halfway "we find" left
-B3  0.26→0.35  photo holds; "your story/" right
-B4  0.35→0.46  photo clip contracts to portrait phone shape (polaroid area); "your story/" stays
-B5  0.46→0.54  phone clip + "your story/" fade; "craft" fades in right simultaneously
-B5a 0.50→0.57  sq1 (hands) fades in left of craft
-B6  0.57→0.65  sq2 center + "the" right
-B7  0.65→0.74  sq3 lower-right + "vision/" right
-B8  0.74→0.84  sq2 expands full bleed — hold/breathe (bg stays white until 99%)
-B9  0.84→0.91  "expand possibility" over full bleed — holds
-B10 0.91→1.00  expand fades, video zooms+b&w, small wm fades out, large wm fades in
-*/
 const B=[0,.07,.15,.26,.35,.46,.54,.57,.65,.74,.84,.91,1.0];
 const bt=(p,i)=>clamp((p-B[i])/(B[i+1]-B[i]),0,1);
 
@@ -379,7 +367,8 @@ function onScroll(){
   const stH=SS.offsetHeight-vh();
   const p=clamp((window.scrollY-stTop)/stH,0,1);
   const W=vw(),H=vh(),AH=aH();
-  const cx=W/2, cy=AH/2;
+  const cx=W/2,cy=AH/2;
+  const isMob=mob();
 
   const t1=bt(p,1),t2=bt(p,2),t3=bt(p,3),t4=bt(p,4),t5=bt(p,5);
   const t5a=clamp((p-B[6])/(B[7]-B[6]),0,1);
@@ -392,17 +381,15 @@ function onScroll(){
   WM.style.top=wmTop+'px';
   WM.style.left='50%';
   WM.style.transform='translate(-50%,-50%)';
-  // white when full bleed, fades out on beat10
-  WM.classList.toggle('ww', t8>0.95);
+  WM.classList.toggle('ww',t8>0.95);
   WM.style.opacity=String(clamp(1-t10*3,0,1));
 
   // ── SCROLL INDICATOR ──
   const sil=SI.querySelector('.sil');
   const sit=SI.querySelector('.sit');
-  // above wm → bottom center
   const lineH=Math.round(lerp(48,18,ease(t1)));
-  const sTop_above=H*.5 - wmSz/2 - 60 - lineH - 16; // 8px gap above wm, 16 for text
-  const sTop_below=H - bH() - 18 - lineH - 16;
+  const sTop_above=H*.5-wmSz/2-60-lineH-16;
+  const sTop_below=H-bH()-18-lineH-16;
   const sTop=lerp(sTop_above,sTop_below,ease(t1));
   SI.style.top=sTop+'px';
   SI.style.bottom='auto';
@@ -410,21 +397,16 @@ function onScroll(){
   sit.style.opacity=String(clamp(1-ease(t1)*2,0,1));
   if(t10>0.4) SI.classList.add('hid'); else SI.classList.remove('hid');
 
-  // ── DESK PHOTO ──
-  // size: small (beat1) → medium (beat2 expansion)
-  const smSz=Math.min(AH*.24,W*.18);
-  const mdW=Math.min(AH*.48,W*.37);
+  // ── DESK PHOTO ── (desktop unchanged, mobile slightly larger/centered)
+  const smSz=Math.min(AH*.24,W*(isMob?.45:.18));
+  const mdW=Math.min(AH*.48,W*(isMob?.72:.37));
   const mdH=mdW*(3/4);
-  // during beat1: photo is small square
   const smH=smSz*(3/4);
   const photoW=lerp(smSz,mdW,ease(t2));
   const photoH=lerp(smH,mdH,ease(t2));
   const photoL=cx-photoW/2;
   const photoT=cy-photoH/2;
 
-  // photo-wrap: always the full expanded size (so clip can contract from it)
-  // we set it to medium size from beat2 onward
-  // during beat4 clip contracts — wrap stays same size, clip shrinks
   PW.style.width=photoW+'px';
   PW.style.height=photoH+'px';
   PW.style.left=photoL+'px';
@@ -432,42 +414,49 @@ function onScroll(){
   PW.style.borderRadius='12px';
   PW.style.overflow='hidden';
 
-  // beat1: photo fades in; beat4/5: photo fades out via opacity
-  const photoOp=clamp((t2)*6,0,1)*clamp(1-ease(t5)*3,0,1);
+  const photoOp=clamp(t2*6,0,1)*clamp(1-ease(t5)*3,0,1);
   PW.style.opacity=String(photoOp);
 
-  // beat4: clip contracts from full rect to portrait phone shape (polaroid area)
-  // Full clip = inset(0%) → phone shape = inset(top% side% bottom% side%)
-  // Polaroid sits ~center-left: we crop to show ~30%-70% horiz, ~35%-90% vert
-  // We use clip-path: inset(top right bottom left round Xpx)
+  // phone crop beat4
   if(t4>0){
     const et=ease(t4);
-    // contract toward the polaroid area
-    const iTop=lerp(0,8,et);    // % from top
-    const iRight=lerp(0,52,et);  // % from right
-    const iBot=lerp(0,8,et);     // % from bottom
-    const iLeft=lerp(0,18,et);  // % from left
-    const iRad=lerp(12,16,et);   // border radius px
+    const iTop=lerp(0,8,et);
+    const iRight=lerp(0,52,et);
+    const iBot=lerp(0,8,et);
+    const iLeft=lerp(0,18,et);
+    const iRad=lerp(12,16,et);
     PW.style.clipPath=`inset(${iTop}% ${iRight}% ${iBot}% ${iLeft}% round ${iRad}px)`;
   } else {
     PW.style.clipPath='inset(0% 0% 0% 0% round 12px)';
   }
 
   // ── THREE SQUARES ──
-  const s2sz=Math.min(AH*.27,W*.17);
-  const s1sz=s2sz*.76,s3sz=s2sz*.76;
-  const s2x=cx-s2sz/2,s2y=cy-s2sz/2-10;
-  const s1x=s2x-s1sz-GAP*2,s1y=s2y-s1sz*.3;
-  const s3x=s2x+s2sz+GAP*2,s3y=s2y+s2sz-s3sz*.55;
+  // mobile: bigger, staggered vertically. desktop: unchanged.
+  let s2sz,s1sz,s3sz,s2x,s2y,s1x,s1y,s3x,s3y;
+  if(isMob){
+    s2sz=Math.min(AH*.36,W*.52);
+    s1sz=s2sz*.72; s3sz=s2sz*.72;
+    s2x=cx-s2sz/2; s2y=cy-s2sz/2;
+    s1x=8; s1y=s2y-s1sz*.55;
+    s3x=W-s3sz-8; s3y=s2y+s2sz-s3sz*.3;
+  } else {
+    s2sz=Math.min(AH*.27,W*.17);
+    s1sz=s2sz*.76; s3sz=s2sz*.76;
+    s2x=cx-s2sz/2; s2y=cy-s2sz/2-10;
+    s1x=s2x-s1sz-GAP*2; s1y=s2y-s1sz*.3;
+    s3x=s2x+s2sz+GAP*2; s3y=s2y+s2sz-s3sz*.55;
+  }
+
   S1.style.width=s1sz+'px';S1.style.height=s1sz+'px';S1.style.left=s1x+'px';S1.style.top=s1y+'px';
   S2.style.width=s2sz+'px';S2.style.height=s2sz+'px';S2.style.left=s2x+'px';S2.style.top=s2y+'px';
   S3.style.width=s3sz+'px';S3.style.height=s3sz+'px';S3.style.left=s3x+'px';S3.style.top=s3y+'px';
+
   const sqFade=clamp(1-t8*3,0,1);
   S1.style.opacity=String(clamp(t5a*4,0,1)*sqFade);
   S2.style.opacity=String(clamp((t6-.05)*5,0,1)*sqFade);
   S3.style.opacity=String(clamp((t7-.05)*5,0,1)*sqFade);
 
-  // ── CENTER EXPAND from sq2 ──
+  // ── CENTER EXPAND from sq2 — DESKTOP UNCHANGED ──
   if(t8>0){
     const cpb=getSq2();
     if(cpb.w>0){
@@ -478,7 +467,6 @@ function onScroll(){
       CE.style.width=lerp(cpb.w,W,et)+'px';
       CE.style.height=lerp(cpb.h,H,et)+'px';
       CE.style.borderRadius=lerp(10,0,et)+'px';
-      // bg: stays WHITE until 99% full bleed — no black flash
       SH.style.background=et>.99?'var(--bk)':'var(--ow)';
       VG.style.opacity='0';
     }
@@ -499,59 +487,115 @@ function onScroll(){
   }
 
   document.body.classList.toggle('vc',t8>.5);
-
-  // large wm: fades in beat10, stays
   if(!WML.classList.contains('hwm'))
     WML.style.opacity=String(clamp((t10-.15)*2.5,0,1));
 
   // stamp
-  if(t9>.5&&!stampOn){stampOn=true;ST.classList.add('vis')}
+  if(t9>.5&&!stampOn){
+    stampOn=true;
+    ST.classList.add('vis');
+    // mobile: force stamp to bottom right above bars
+    if(isMob){
+      ST.style.bottom=bH()+10+'px';
+      ST.style.top='auto';
+      ST.style.right='14px';
+    }
+  }
   else if(t9<.5&&stampOn){stampOn=false;ST.classList.remove('vis')}
 
   // ── TEXT ──
 
-  // "we find" — beat2 halfway, fades beat4
-  const wfOp=clamp((t2-.45)*6,0,1)*clamp(1-ease(t4)*2,0,1);
+  // "we find"
+  const wfOp=isMob?clamp((t2-.05)*5,0,1)*clamp(1-ease(t4)*2,0,1):clamp((t2-.45)*6,0,1)*clamp(1-ease(t4)*2,0,1);
   TWF.style.opacity=String(wfOp);
-  TWF.style.left='0';
-  TWF.style.width=(photoL-GAP)+'px';
-  TWF.style.top=cy+'px';
-  TWF.style.transform='translateY(-50%)';
+  if(isMob){
+    TWF.style.left='16px';
+    TWF.style.right='auto';
+    TWF.style.width='auto';
+    TWF.style.top=(photoT-8)+'px';
+    TWF.style.transform='translateY(-100%)';
+    TWF.style.textAlign='left';
+  } else {
+    TWF.style.left='0';
+    TWF.style.right='auto';
+    TWF.style.width=(photoL-GAP)+'px';
+    TWF.style.top=cy+'px';
+    TWF.style.transform='translateY(-50%)';
+    TWF.style.textAlign='right';
+  }
 
-  // "your story/" — beat3, fades beat5
+  // "your story/"
   const yrOp=clamp(t3*4,0,1)*clamp(1-t5*4,0,1);
   TYR.style.opacity=String(yrOp);
-  TYR.style.left=(photoL+photoW+GAP)+'px';
-  TYR.style.right='0';
-  TYR.style.top=cy+'px';
-  TYR.style.transform='translateY(-52%)';
+  if(isMob){
+    TYR.style.left='auto';
+    TYR.style.right='16px';
+    TYR.style.width='auto';
+    TYR.style.top=(photoT+photoH+10)+'px';
+    TYR.style.transform='none';
+    TYR.style.textAlign='right';
+    TYR.style.lineHeight='1.1';
+  } else {
+    TYR.style.left=(photoL+photoW+GAP)+'px';
+    TYR.style.right='0';
+    TYR.style.top=cy+'px';
+    TYR.style.transform='translateY(-52%)';
+    TYR.style.lineHeight='';
+  }
 
-  // "craft" — beat5 simultaneously with phone fade
-  const crOp=clamp((t5-.1)*5,0,1)*sqFade;
+  // "craft" — fades in WITH sq1 on mobile
+  const crOp=isMob?clamp(t5a*5,0,1)*sqFade:clamp((t5-.1)*5,0,1)*sqFade;
   TCR.style.opacity=String(crOp);
-  TCR.style.left='0';
-  TCR.style.width=(s1x-GAP)+'px';
-  TCR.style.top=(s1y+s1sz/2)+'px';
-  TCR.style.transform='translateY(-50%)';
+  if(isMob){
+    TCR.style.left=(s1x+s1sz+12)+'px';
+    TCR.style.right='0';
+    TCR.style.width='auto';
+    TCR.style.top=(s1y+s1sz/2-20)+'px';
+    TCR.style.transform='translateY(-50%)';
+    TCR.style.textAlign='left';
+  } else {
+    TCR.style.left='0';
+    TCR.style.right='auto';
+    TCR.style.width=(s1x-GAP)+'px';
+    TCR.style.top=(s1y+s1sz/2)+'px';
+    TCR.style.transform='translateY(-50%)';
+    TCR.style.textAlign='right';
+  }
 
-  // "the" — beat6
+  // "the"
   TTH.style.opacity=String(clamp((t6-.05)*5,0,1)*sqFade);
-  TTH.style.left=(s2x+s2sz+GAP)+'px';
-  TTH.style.right='0';
-  TTH.style.top=(s2y+s2sz*.15)+'px';
-  TTH.style.transform='none';
+  if(isMob){
+    TTH.style.left=(s2x*.4)+'px';
+    TTH.style.right='auto';
+    TTH.style.top=(s2y+s2sz*.4)+'px';
+    TTH.style.transform='none';
+    TTH.style.textAlign='left';
+  } else {
+    TTH.style.left=(s2x+s2sz+GAP)+'px';
+    TTH.style.right='0';
+    TTH.style.top=(s2y+s2sz*.15)+'px';
+    TTH.style.transform='none';
+  }
 
-  // "vision/" — beat7, right of sq3
+  // "vision/"
   TVI.style.opacity=String(clamp((t7-.05)*5,0,1)*sqFade);
-  TVI.style.left=(s3x+s3sz+GAP)+'px';
-  TVI.style.right='0';
-  TVI.style.top=(s3y+s3sz*.3)+'px';
-  TVI.style.transform='none';
+  if(isMob){
+    TVI.style.left=(cx-s3sz*.6)+'px';
+    TVI.style.right='auto';
+    TVI.style.top=(s2y+s2sz+12)+'px';
+    TVI.style.transform='none';
+    TVI.style.textAlign='left';
+  } else {
+    TVI.style.left=(s3x+s3sz+GAP)+'px';
+    TVI.style.right='0';
+    TVI.style.top=(s3y+s3sz*.3)+'px';
+    TVI.style.transform='none';
+  }
 
-  // "expand possibility" — beat9 only
+  // "expand possibility"
   TE.style.opacity=String(clamp(t9*5,0,1)*clamp(1-t10*4,0,1));
   TE.style.top=cy+'px';
-  TE.style.transform=`translateY(-50%)`;
+  TE.style.transform='translateY(-50%)';
 }
 
 // ── PANEL ──
@@ -574,19 +618,17 @@ function tp(id,bid){
   panel.scrollTop=0;
   WML.classList.add('hwm');
   SI.classList.add('hid');
-  // wm to top-left
-  
 }
 
 // ── INIT ──
 (function init(){
   const W=vw(),H=vh(),AH=aH();
-  const smSz=Math.min(AH*.24,W*.18);
+  const isMob=mob();
+  const smSz=Math.min(AH*.24,W*(isMob?.45:.18));
   const smH=smSz*(3/4);
   PW.style.width=smSz+'px';PW.style.height=smH+'px';
   PW.style.left=(W/2-smSz/2)+'px';PW.style.top=(AH/2-smH/2)+'px';
   PW.style.opacity='0';PW.style.borderRadius='12px';
-  // scroll indicator: position above wordmark
   const lineH=48,textH=16,wmHalf=13;
   const siTop=H*.5-wmHalf-60-lineH-textH;
   SI.style.top=siTop+'px';
@@ -594,7 +636,20 @@ function tp(id,bid){
 })();
 
 window.addEventListener('scroll',onScroll,{passive:true});
-window.addEventListener('resize',()=>{(function init(){const W=vw(),H=vh(),AH=aH();const smSz=Math.min(AH*.24,W*.18);const smH=smSz*(3/4);PW.style.width=smSz+'px';PW.style.height=smH+'px';PW.style.left=(W/2-smSz/2)+'px';PW.style.top=(AH/2-smH/2)+'px';const siTop=H*.5-13-52-48-16;SI.style.top=siTop+'px'})();onScroll()},{passive:true});
+window.addEventListener('resize',()=>{
+  (function(){
+    const W=vw(),H=vh(),AH=aH();
+    const isMob=mob();
+    const smSz=Math.min(AH*.24,W*(isMob?.45:.18));
+    const smH=smSz*(3/4);
+    PW.style.width=smSz+'px';PW.style.height=smH+'px';
+    PW.style.left=(W/2-smSz/2)+'px';PW.style.top=(AH/2-smH/2)+'px';
+    const siTop=H*.5-13-60-48-16;
+    SI.style.top=siTop+'px';
+  })();
+  onScroll();
+},{passive:true});
+
 document.querySelectorAll('img').forEach(i=>i.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)';this.removeAttribute('src')}));
 document.querySelectorAll('video').forEach(v=>v.addEventListener('error',function(){this.style.background='rgba(0,0,0,.08)'}));
 </script>

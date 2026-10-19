@@ -4,12 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>fwd slash studio | creative storytelling for brands</title>
-<meta name="description" content="A creative storytelling studio for brands. Our website is launching soon. Our studio is live, booking new clients, and in mid-production with brands we’ll introduce you to soon.">
+<meta name="description" content="A creative storytelling studio for brands. The website’s taking five. We’re not. Our studio is live, booking new clients and working with brands we’re bursting to tell you about.">
 <meta property="og:title" content="fwd slash studio">
-<meta property="og:description" content="Creative storytelling studio for brands. Live, booking new clients. Inbox always open.">
+<meta property="og:description" content="Creative storytelling for brands. Our studio is live and booking new clients.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fwdslashstudio.com/">
+<meta property="og:image" content="https://fwdslashstudio.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://fwdslashstudio.com/og-image.png">
 <meta name="theme-color" content="#fefef2">
 <script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("animate")</script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23fefef2'/%3E%3Cpath d='M40 10 L24 54' stroke='%23707300' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -119,6 +128,12 @@
     background: var(--olive); animation: blink .7s steps(1) infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
+  /* brackets open the logo; the cursor is a > */
+  .animate .mid { display: inline-block; max-width: 0; overflow: hidden; vertical-align: bottom; white-space: pre; opacity: 0; padding: .3em .12em; margin: -.3em -.12em; transition: max-width .8s cubic-bezier(.65,0,.2,1), opacity .5s ease .15s; }
+  .animate .mid.open { max-width: 9em; opacity: 1; }
+  .mid { white-space: pre; }
+  .animate .c.cur::after { content: ">"; width: auto; height: auto; background: none; color: var(--olive); top: 0; left: 100%; right: auto; margin-left: .04em; font-family: var(--serif); line-height: inherit; font-size: 1em; }
+
   .animate .mk:not(.hl) path { stroke-dashoffset: 1; transition: stroke-dashoffset .45s cubic-bezier(.55,.1,.35,1); }
   .animate .mk.drawn:not(.hl) path { stroke-dashoffset: 0; }
   .animate .mk:not(.hl):not(.drawn) path { visibility: hidden; }
@@ -127,21 +142,94 @@
   .animate .mk.frame path { transition-duration: 1.4s; }
   .animate .hand { clip-path: inset(-25% 100% -25% -10%); transition: clip-path .85s linear; }
   .animate .hand.show { clip-path: inset(-25% -12% -25% -10%); }
+
+  /* ===== version B: the forward ribbon ===== */
+  :root { --m: 14px; --t: 30px; }
+  .stage { padding: 96px 72px; }
+  .col { width: min(800px, 100%); }
+  .rb { position: absolute; inset: var(--m); z-index: 0; pointer-events: none; }
+  .st { position: absolute; overflow: hidden; background: var(--lime); }
+  .st.t { left: 0; right: 0; top: 0; height: var(--t); }
+  .st.b { left: 0; right: 0; bottom: 0; height: var(--t); }
+  .st.l { left: 0; top: 0; bottom: 0; width: var(--t); }
+  .st.r { right: 0; top: 0; bottom: 0; width: var(--t); }
+  .st .in { display: flex; width: max-content; height: 100%; align-items: center; will-change: transform; }
+  .st.l .in, .st.r .in { flex-direction: column; width: 100%; height: max-content; }
+  .half { display: flex; flex: none; }
+  .st.l .half, .st.r .half { flex-direction: column; }
+  .u { font-family: var(--body); font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: #000; white-space: nowrap; padding: 0 .9em; line-height: 1; }
+  .u i { font-style: normal; color: var(--olive); margin-left: .9em; }
+  .st.l .u, .st.r .u { writing-mode: vertical-rl; padding: .9em 0; }
+  .st.l .u { transform: rotate(180deg); }
+  .st.l .u i, .st.r .u i { margin-left: 0; margin-top: .9em; }
+  .cr { position: absolute; width: var(--t); height: var(--t); background: var(--lime); z-index: 2; fill: none; stroke: var(--olive); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .cr.tl { left: 0; top: 0; } .cr.tr { right: 0; top: 0; } .cr.br { right: 0; bottom: 0; } .cr.bl { left: 0; bottom: 0; }
+  .animate .rb { opacity: 0; transform: scale(.985); transition: opacity .9s ease, transform 1.3s cubic-bezier(.2,.7,.2,1); }
+  .animate .rb.in { opacity: 1; transform: none; }
+
+  .logo { font-size: clamp(34px, 4.4vw, 50px); }
+  .status { margin-top: clamp(40px, 5vw, 64px); color: #000; }
+  .status .hook { font-size: clamp(38px, 5.6vw, 70px); line-height: .98; letter-spacing: -0.037em; }
+  .status .it { font-style: italic; color: var(--olive); }
+  br.hk { display: inline; }
+  .status .lead { font-size: clamp(22px, 2.3vw, 30px); margin-top: clamp(26px, 3vw, 38px); }
+  .copy { margin-top: clamp(22px, 2.6vw, 32px); font-family: var(--body); font-size: clamp(14px, 1.3vw, 17px); letter-spacing: -0.017em; line-height: 1.3; color: var(--olive); }
+  .copy p + p { margin-top: 14px; }
+  .fwdw { font-family: var(--serif); font-style: italic; color: #000; font-size: 1.32em; letter-spacing: -0.037em; }
+  .cta { margin-top: clamp(30px, 3.6vw, 44px); }
+  .email { margin-top: 12px; }
+  @media (max-width: 600px) { :root { --m: 8px; --t: 24px; } .stage { padding: 74px 38px; } .u { font-size: 9.5px; } }
+
+  /* ===== edits ===== */
+  .email { font-family: var(--serif); font-size: clamp(26px, 2.7vw, 36px); letter-spacing: -0.037em; color: var(--coral); line-height: 1.05; }
+  .email:hover, .email:focus-visible { color: #000; }
+  .cta { color: #000; }
+
+  .stage { padding: 82px 72px; }
+  .status { margin-top: clamp(30px, 3.6vw, 48px); }
+  .status .hook { font-size: clamp(36px, 5.1vw, 62px); }
+  .status .lead { margin-top: clamp(22px, 2.5vw, 32px); }
+  .copy { margin-top: clamp(18px, 2.2vw, 28px); }
+  .cta { margin-top: clamp(24px, 3vw, 36px); }
+  .email { font-size: clamp(26px, 2.5vw, 32px); margin-top: 8px; }
+  .cr { stroke: var(--olive) !important; }
+  @media (max-width: 600px) { .stage { padding: 70px 38px; } }
+
+  /* ===== lock round ===== */
+  .email { color: #000; }
+  .email:hover, .email:focus-visible { color: var(--coral); }
+  .fwdw { color: var(--olive); }
+
+  /* ===== final ===== */
+  #w1 { margin: 0 .06em 0 .12em; }
+  .cta { color: var(--coral); font-size: 14px; letter-spacing: .02em; }
+  .animate .copy.fade { transition: opacity 1.2s ease, transform 1.2s ease; }
+  @media (max-width: 600px) { .cta { font-size: 13px; } }
 </style>
 </head>
 <body>
 <div class="stage" id="stage">
   <svg class="ov under" id="under" aria-hidden="true"></svg>
+  <div class="rb" id="rb" aria-hidden="true">
+    <div class="st t"><div class="in"></div></div><div class="st r"><div class="in"></div></div><div class="st b"><div class="in"></div></div><div class="st l"><div class="in"></div></div>
+    <svg class="cr tl" viewBox="0 0 28 28"><polyline points="10,7 19,14 10,21"/></svg>
+    <svg class="cr tr" viewBox="0 0 28 28"><polyline points="7,10 14,19 21,10"/></svg>
+    <svg class="cr br" viewBox="0 0 28 28"><polyline points="18,7 9,14 18,21"/></svg>
+    <svg class="cr bl" viewBox="0 0 28 28"><polyline points="7,18 14,9 21,18"/></svg>
+  </div>
   <div class="col">
-    <h1 class="logo fade">&lt; fwd <em>slash</em> studio &gt;</h1>
-    <p class="desc fade">creative storytelling studio for brands</p>
-
+    <h1 class="logo fade" id="lg" aria-label="fwd slash studio"><span aria-hidden="true"><span class="br">&lt;</span><span class="mid" id="mid">&nbsp;fwd <em>slash</em> studio&nbsp;</span><span class="br">&gt;</span></span></h1>
+    <p class="desc fade">creative storytelling for brands</p>
     <div class="status">
-      <p><span class="sr">Our website is launching soon.</span><span aria-hidden="true"><span class="seg">Our website is</span> <span class="seg del" id="d1">loading</span> <span class="seg">launching soon.</span></span></p>
-      <p><span class="sr">Our studio is live, booking new clients, and in mid-production with brands we’ll introduce you to soon.</span><span aria-hidden="true"><span class="seg">Our studio is</span> <span class="seg del" id="d2">launching soon</span><br class="mb"> <span class="seg" id="w1">live</span><span class="seg">,</span> <span class="seg" id="w2">booking</span> <span class="seg" id="w2b">new clients</span><span class="seg">,</span><br class="mb"> <span class="seg">and in mid-production</span><br> <span class="seg">with</span> <span class="seg" id="w3">brands we’ll introduce you to soon.</span></span></p>
+      <p class="hook"><span class="sr">The website’s taking five. We’re not.</span><span aria-hidden="true"><span class="seg">The website’s taking five.</span><br class="hk"> <span class="seg it">We’re not.</span></span></p>
+      <p class="lead"><span class="sr">Our studio is live, working with brands we’re bursting to tell you about, and booking new clients.</span><span aria-hidden="true"><span class="seg">Our studio is</span> <span class="seg" id="w1">live</span><span class="seg">,</span><br class="mb"> <span class="seg">working with brands</span><br> <span class="seg" id="wbur">we’re bursting to tell you about</span><span class="seg">,</span><br class="mb"> <span class="seg">and</span> <span class="seg" id="w2">booking</span> <span class="seg" id="w2b">new clients</span><span class="seg">.</span></span></p>
+    </div>
+    <div class="copy fade" id="copy">
+      <p><span class="sr">Momentum takes a story with a spine and an idea with creative conviction. We build both.</span><span aria-hidden="true"><span class="seg">Momentum takes a story with a spine</span><br> <span class="seg">and an idea with creative conviction.</span><br class="mb"> <span class="seg" id="wb">We build both.</span></span></p>
+      <p><span class="sr">If your brand could use a push fwd, we’d love to help.</span><span aria-hidden="true"><span class="seg">If your brand could use</span><br class="mb"> <span class="seg">a push</span> <span class="seg fwdw">fwd,</span> <span class="seg">we’d love to help.</span></span></p>
     </div>
 
-    <p class="cta fade" id="ctaP"><span class="sr">Inbox always open:</span><span aria-hidden="true"><span class="seg" id="cta">inbox always open:</span></span></p>
+    <p class="cta fade" id="ctaP"><span class="sr">Let’s talk:</span><span aria-hidden="true"><span class="seg" id="cta">let’s talk:</span></span></p>
     <a class="email fade" id="em" href="mailto:hello@fwdslashstudio.com">hello@fwdslashstudio.com</a>
   </div>
   <svg class="ov over" id="over" aria-hidden="true"></svg>
@@ -231,25 +319,13 @@
       paths(m.g, [smooth(p)], CORAL, sm ? 3.6 : 4.4);
     };
   }
-  var mC = group('circle', over);
-  mC.build = function () {
-    var R0 = rng(5), r = lines($('w1'))[0], sm = small();
-    var cx = r.x + r.w / 2, cy = r.y + r.h * .56, rx = r.w / 2 + (sm ? 6 : 9), ry = r.h * .46 + (sm ? 3 : 4);
-    var N = 44, a0 = -2.2, loops = 1.1, p = [];
-    for (var i = 0; i <= N; i++) { var t = i / N, a = a0 - t * 2 * Math.PI * loops, g = 1 + t * .07; p.push([cx + Math.cos(a) * rx * g, cy + Math.sin(a) * ry * g]); }
-    paths(mC.g, [smooth(p)], OLIVE, sm ? 2.1 : 2.6);
-  };
-  var mU = group('under', over);
-  mU.build = function () {
-    var r = lines($('w2'))[0], r2 = lines($('w2b'))[0], sm = small(), y = r.y + r.h * 1.0, x0 = r.x - 3, x1 = r2.x + r2.w + 5;
-    paths(mU.g, ['M' + x0 + ' ' + (y + 1) + ' Q' + (x0 + x1) / 2 + ' ' + (y + 4.5) + ' ' + x1 + ' ' + (y - 2.5)], OLIVE, sm ? 2.1 : 2.6);
-  };
   function defHL(name, id, padx) {
     var m = group(name, under, 'hl');
     m.build = function () {
       var R0 = rng(9), R = function (k) { return (R0() - .5) * k; };
       m.g.textContent = '';
-      lines($(id)).forEach(function (r) {
+      var rows = Array.isArray(id) ? (function () { var a = lines($(id[0]))[0], b = lines($(id[id.length - 1]))[0]; return [{ x: a.x, y: Math.min(a.y, b.y), w: b.x + b.w - a.x, h: Math.max(a.h, b.h) }]; })() : lines($(id));
+      rows.forEach(function (r) {
         var t = r.y + r.h * .2, b = r.y + r.h * .92, x0 = r.x - padx, x1 = r.x + r.w + padx;
         var n = Math.max(3, Math.round((x1 - x0) / 40)), T = [], B = [], k;
         for (k = 0; k <= n; k++) { var x = x0 + (x1 - x0) * k / n; T.push([x + R(3), t + R(1.4) - (k / n) * 1.5]); B.push([x + R(3), b + R(1.4) - (k / n) * 1.5]); }
@@ -260,37 +336,45 @@
       });
     };
   }
-  var mS = group('swoosh', over);
-  mS.build = function () {
-    var r = box($('em')), y = r.y + r.h + 5, x0 = r.x - 2, x1 = r.x + r.w + 4;
-    paths(mS.g, ['M' + x0 + ' ' + y + ' C' + (x0 + (x1 - x0) * .3) + ' ' + (y + 4.5) + ' ' + (x0 + (x1 - x0) * .7) + ' ' + (y - 1) + ' ' + x1 + ' ' + (y - 3)], OLIVE, small() ? 2 : 2.4);
-  };
-  var mF = group('frame', over, 'frame');
-  mF.build = function () {
-    var s = S(), W = s.width, H = s.height, sm = small(), m = sm ? 12 : 34, r = sm ? 10 : 14;
-    var p = [[m + r, m], [W / 2, m + 2], [W - m - r, m], [W - m, m + r], [W - m + 1, H / 2], [W - m, H - m - r], [W - m - r, H - m], [W / 2, H - m - 2], [m + r, H - m], [m, H - m - r], [m - 1, H / 2], [m, m + r], [m + r + 2, m - 1]];
-    paths(mF.g, [smooth(p)], OLIVE, sm ? 2 : 2.4);
-  };
-  var mH = group('hi', over); hand('hi', 'say hi', 34);
-  mH.build = function () {
-    var e = box($('em')), sm = small(), h = mH.hand, d;
-    h.style.fontSize = (sm ? 28 : 34) + 'px';
-    if (!sm) {
-      h.style.left = (e.x + e.w + 70) + 'px'; h.style.top = (e.y - 8) + 'px'; h.style.transform = 'rotate(3deg)';
-      d = arrow([[e.x + e.w + 62, e.y + e.h * .5], [e.x + e.w + 40, e.y + e.h * .58], [e.x + e.w + 22, e.y + e.h * .6]], 9);
-    } else {
-      h.style.left = (e.x + e.w - 30) + 'px'; h.style.top = (e.y + e.h + 22) + 'px'; h.style.transform = 'rotate(3deg)';
-      d = arrow([[e.x + e.w - 34, e.y + e.h + 30], [e.x + e.w - 44, e.y + e.h + 24], [e.x + e.w - 52, e.y + e.h + 18]], 7);
-    }
-    paths(mH.g, d, OLIVE, sm ? 1.8 : 2);
-  };
-  defStrike('strike1', 'd1', 3); defStrike('strike2', 'd2', 8);
-  defHL('hl3', 'w3', 6); defHL('hlcta', 'cta', 5);
+  defHL('hlbur', 'wbur', 6); defHL('hlb', 'wb', 6); defHL('hllive', 'w1', 3); defHL('hlbook', ['w2', 'w2b'], 4);
+
+
+  /* ---------- forward ribbon (version B) ---------- */
+  var RB = document.getElementById('rb'), rbAnims = [], rbRate = 1;
+  var WORDS = ['STORYTELLING', 'CREATIVE DIRECTION', 'MIXED MEDIA', 'VIDEO'];
+  function seqHTML() { return WORDS.map(function (w) { return '<span class="u">' + w + ' <i>/</i></span>'; }).join(''); }
+  function buildRibbon() {
+    rbAnims.forEach(function (a) { a.cancel(); }); rbAnims = [];
+    RB.querySelectorAll('.st').forEach(function (st) {
+      var vert = st.classList.contains('l') || st.classList.contains('r'), inn = st.querySelector('.in');
+      inn.innerHTML = '';
+      var len = vert ? st.clientHeight : st.clientWidth;
+      var half = document.createElement('div'); half.className = 'half'; half.innerHTML = seqHTML(); inn.appendChild(half);
+      var seqLen = vert ? half.offsetHeight : half.offsetWidth;
+      half.innerHTML = new Array(Math.max(1, Math.ceil(len / seqLen)) + 1).join(seqHTML());
+      var halfLen = vert ? half.offsetHeight : half.offsetWidth;
+      inn.appendChild(half.cloneNode(true));
+      if (reduce) { inn.style[vert ? 'paddingTop' : 'paddingLeft'] = 'var(--t)'; return; }
+      var p = vert ? 'translateY' : 'translateX', rev = st.classList.contains('t') || st.classList.contains('r');
+      var f = rev ? [{ transform: p + '(-50%)' }, { transform: p + '(0%)' }] : [{ transform: p + '(0%)' }, { transform: p + '(-50%)' }];
+      var a = inn.animate(f, { duration: halfLen / 34 * 1000, iterations: Infinity, easing: 'linear' });
+      a.playbackRate = rbRate; rbAnims.push(a);
+    });
+  }
+  function fastForward() {
+    var t0 = performance.now();
+    (function step(now) {
+      var t = now - t0, r = t < 700 ? 1 + 7 * (t / 700) : t < 1600 ? 8 : t < 2700 ? 8 - 7 * ((t - 1600) / 1100) : 1;
+      rbRate = r; rbAnims.forEach(function (a) { a.playbackRate = r; });
+      if (t < 2700) requestAnimationFrame(step);
+    })(t0);
+  }
 
   function layout() {
     var s = S();
     [under, over].forEach(function (svg) { svg.setAttribute('width', s.width); svg.setAttribute('height', s.height); });
     Object.keys(marks).forEach(function (k) { marks[k].build(); });
+    buildRibbon();
   }
   function show(name) { var m = marks[name]; m.g.classList.add('drawn'); if (m.hand) m.hand.classList.add('show'); }
   function write(name) { marks[name].hand.classList.add('show'); }
@@ -313,34 +397,37 @@
   async function run() {
     var ps = document.querySelectorAll('.status p');
     await wait(150);
-    document.querySelectorAll('.logo, .desc').forEach(function (e) { e.classList.add('in'); });
-    await wait(1100);
+    $('lg').classList.add('in'); await wait(300);     /* < > appears */
+    $('mid').classList.add('open'); await wait(450);  /* brackets part */
+    document.querySelector('.desc').classList.add('in'); await wait(650);
 
-    show('frame');                                   /* border starts with the type */
-    var a = segs(ps[0]);
-    await type(a[0], T); await type(a[1], T);        /* Our website is loading */
-    await wait(260); show('strike1'); await wait(560);          /* scratch loading */
-    await type(a[2], T); await wait(420);            /* launching soon. */
+    RB.classList.add('in');                           /* ribbon fades in and starts moving as the type starts */
+    var hooks = {
+      w1:   async function () { await wait(120); show('hllive'); await wait(600); },   /* underline live */
+      wbur: async function () { show('hlbur'); await wait(550); },                       /* highlight the clause */
+      w2b:  async function () { await wait(120); show('hlbook'); await wait(650); }      /* underline booking new clients */
+    };
+    async function typeP(p) {
+      var ss = segs(p);
+      for (var i = 0; i < ss.length; i++) {
+        await type(ss[i], T);
+        var h = ss[i].id && hooks[ss[i].id]; if (h) await h();
+      }
+    }
+    var hook = segs(ps[0]);
+    await type(hook[0], T); await wait(520);
+    await type(hook[1], T); await wait(650);
+    await typeP(ps[1]); await wait(700);
 
-    var b = segs(ps[1]);
-    await type(b[0], T); await type(b[1], T);        /* Our studio is launching soon */
-    await wait(260); show('strike2'); await wait(560);          /* scratch launching soon */
-    await type(b[2], T);                             /* live */
-    await wait(140); show('circle'); await wait(700);           /* circle live */
-    await type(b[3], T); await type(b[4], T);        /* , booking */
-    await type(b[5], T); await type(b[6], T);        /* new clients, */
-    await wait(140); show('under'); await wait(700); /* underline booking new clients */
-    for (var i = 7; i <= 9; i++) await type(b[i], T);           /* the rest */
-    await wait(200);
-
-    /* highlight, and everything below fades in with it */
-    show('hl3');
+    /* beat 1: the story block fades in as one */
+    document.querySelectorAll('#copy .c').forEach(function (c) { c.classList.add('on'); });
+    $('copy').classList.add('in'); await wait(1700);
+    /* beat 2: highlight */
+    show('hlb'); await wait(1300);
+    /* beat 3: let's talk and the email fade in together, and the ribbon fast-forwards once */
     document.querySelectorAll('#ctaP .c').forEach(function (c) { c.classList.add('on'); });
-    $('ctaP').classList.add('in'); show('hlcta'); $('em').classList.add('in');
-    await wait(1500);
-
-    show('swoosh'); await wait(800);                 /* underline email */
-    write('hi'); await wait(900); arrowIn('hi');     /* say hi, written on */
+    $('ctaP').classList.add('in'); $('em').classList.add('in');
+    fastForward();
   }
 
   function start() {
